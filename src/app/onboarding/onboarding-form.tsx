@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAuth } from "@/components/auth-provider";
 import { countryFlag, countryOptions } from "@/lib/countries";
+import { useHydrated } from "@/lib/hooks/use-hydrated";
 
 const USERNAME_RE = /^[A-Za-z0-9_]{3,20}$/;
 
@@ -18,7 +19,10 @@ export function OnboardingForm() {
   const [syncedId, setSyncedId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const options = useMemo(() => countryOptions(), []);
+  // Los nombres de países salen de Intl y difieren entre Node y el navegador:
+  // la lista se genera solo en el cliente para evitar desajustes de hidratación.
+  const hydrated = useHydrated();
+  const options = useMemo(() => (hydrated ? countryOptions() : { featured: [], rest: [] }), [hydrated]);
   const locked = editing && profile.username_changes >= 1;
 
   // Rellena el formulario con el perfil existente (patrón "ajustar estado al cambiar props").

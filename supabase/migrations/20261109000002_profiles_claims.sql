@@ -51,7 +51,9 @@ create trigger profiles_guard before update on public.profiles
 create table public.claims (
   id         bigint generated always as identity primary key,
   word       text not null references public.dictionary_words (word),
-  user_id    uuid not null references public.profiles (id) on delete cascade,
+  -- Si alguien borra su cuenta, el historial se conserva: sus reclamaciones quedan
+  -- como "cuenta eliminada" (user_id NULL) y mantienen su posición.
+  user_id    uuid references public.profiles (id) on delete set null,
   position   integer not null check (position >= 1),
   claimed_at timestamptz not null default clock_timestamp(),   -- precisión de microsegundos
   -- El año lo decide SIEMPRE la base de datos a partir de claimed_at en UTC.

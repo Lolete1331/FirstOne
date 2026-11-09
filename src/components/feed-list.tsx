@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { FeedItem } from "@/lib/hooks/use-live-feed";
 import { MedalBadge } from "./medal";
-import { countryFlag } from "@/lib/countries";
+import { UserLink } from "./user-link";
 import { timeAgo } from "@/lib/time/year";
 
 /** Re-render periódico para refrescar los "hace X s". */
@@ -67,9 +67,7 @@ export function FeedList({ items, big = false }: { items: FeedItem[]; big?: bool
                 {item.word}
               </Link>
               <span className="ml-auto flex items-center gap-2 text-sm text-muted shrink-0">
-                <Link href={`/u/${item.username}`} className="hover:text-text truncate max-w-28 sm:max-w-40">
-                  {countryFlag(item.country)} @{item.username}
-                </Link>
+                <UserLink username={item.username} country={item.country} className="truncate max-w-28 sm:max-w-40" />
                 <span className="font-mono text-[11px] w-16 text-right">{timeAgo(item.claimed_at)}</span>
               </span>
             </div>

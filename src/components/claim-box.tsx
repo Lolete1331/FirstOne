@@ -1,7 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { AnimatePresence, motion, useAnimationControls } from "motion/react";
 import { useAuth } from "./auth-provider";
 import { useTurnstile } from "./turnstile";
@@ -11,10 +10,11 @@ import { getSupabase } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/env";
 import { MAX_WORD_LENGTH, normalizeWord } from "@/lib/words/normalize";
 import { formatClaimDate, formatPreciseTime } from "@/lib/time/year";
-import { countryFlag } from "@/lib/countries";
+import { UserLink } from "./user-link";
 import type { ClaimResponse } from "@/lib/claim-types";
 
 type Hint = { word: string; exists: boolean; total: number; owner: string | null };
+
 
 /** Solo letras del español; el resto se descarta al teclear. */
 const sanitize = (v: string) => normalizeWord(v).replace(/[^a-záéíóúüñ]/g, "").slice(0, MAX_WORD_LENGTH);
@@ -83,7 +83,6 @@ export function ClaimBox() {
         setResult({ status: "error", word, message: "Sin conexión. Inténtalo de nuevo." });
       } finally {
         setSending(false);
-        inputRef.current?.focus();
       }
     },
     [value, sending, user, profile, router, ensureHuman, shake],
@@ -113,7 +112,7 @@ export function ClaimBox() {
               chars.map((c, i) => (
                 <motion.span
                   key={`${i}-${c}`}
-                  className={`inline-block ${hint?.word === value && hint.exists && !hint.owner ? "text-gradient fo-shine" : ""}`}
+                  className={`inline-block ${hint?.word === value && hint.exists && hint.total === 0 ? "text-gradient fo-shine" : ""}`}
                   initial={{ y: "0.5em", opacity: 0, scale: 0.4, rotate: -12 }}
                   animate={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 520, damping: 22 }}
@@ -156,9 +155,9 @@ export function ClaimBox() {
               >
                 {!hint.exists ? (
                   <span className="text-danger/90">✗ no está en el diccionario</span>
-                ) : hint.owner ? (
+                ) : hint.total > 0 ? (
                   <span className="text-muted">
-                    👑 de <b className="text-text">@{hint.owner}</b> · {fmt(hint.total)}{" "}
+                    👑 de <b className="text-text">{hint.owner ? `@${hint.owner}` : "cuenta eliminada"}</b> · {fmt(hint.total)}{" "}
                     {hint.total === 1 ? "persona" : "personas"}
                   </span>
                 ) : (
@@ -183,12 +182,53 @@ export function ClaimBox() {
         {turnstile}
       </form>
 
-      <div className="mt-8 min-h-[12rem]">
-        <AnimatePresence mode="wait">
-          {result && <ResultCard key={`${result.word}-${result.status}-${result.position}`} r={result} onClose={() => setResult(null)} />}
-        </AnimatePresence>
-      </div>
+      {/* El resultado ocupa la pantalla: es el momento emocionante del juego */}
+      <AnimatePresence>
+        {result && (
+          <ResultOverlay
+            key={`${result.word}-${result.status}-${result.position}`}
+            r={result}
+            onClose={() => {
+              setResult(null);
+              inputRef.current?.focus();
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+function ResultOverlay({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => (e.key === "Escape" || e.key === "Enter") && onClose();
+    // Pequeño retardo: el Enter que envió la palabra no debe cerrar el resultado.
+    const t = setTimeout(() => window.addEventListener("keydown", onKey), 400);
+    (document.activeElement as HTMLElement | null)?.blur(); // baja el teclado en móvil
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      role="dialog"
+      aria-modal="true"
+      aria-live="assertive"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 grid place-items-center bg-bg/75 backdrop-blur-md p-4"
+    >
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg">
+        <ResultCard r={r} onClose={onClose} />
+        <button onClick={onClose} className="mt-4 w-full text-center text-sm text-muted hover:text-text">
+          Toca para seguir jugando
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
@@ -206,11 +246,8 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
 
   const ownerLine = r.owner && (
     <>
-      Ya es de{" "}
-      <Link href={`/u/${r.owner.username}`} className="font-bold text-text hover:text-lime">
-        {countryFlag(r.owner.country)} @{r.owner.username}
-      </Link>{" "}
-      desde el {formatClaimDate(r.owner.claimed_at)}
+      Ya es de <UserLink username={r.owner.username} country={r.owner.country} className="font-bold text-text" /> desde el{" "}
+      {formatClaimDate(r.owner.claimed_at)}
     </>
   );
 
@@ -220,7 +257,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
         "border-gold/50 shadow-[0_0_80px_rgb(255_200_61/0.25)]",
         <>
           <div className="flex justify-center -mt-2 mb-2">
-            <Medal size={96} />
+            <Medal size={110} />
           </div>
           <motion.p
             initial={{ scale: 0.5, opacity: 0 }}

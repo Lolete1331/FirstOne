@@ -4,7 +4,8 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { useRpc } from "@/lib/hooks/use-rpc";
 import { BigNumber, PageTitle, Skeleton, YearSelect } from "@/components/ui";
-import { countryFlag } from "@/lib/countries";
+import { UserLink } from "@/components/user-link";
+
 import { currentGameYear, formatClaimDate, formatSinceReset } from "@/lib/time/year";
 
 type Stats = {
@@ -14,7 +15,7 @@ type Stats = {
   players: number;
   dictionary_total: number;
   percent: number;
-  fastest: { word: string; username: string; country: string | null; claimed_at: string; seconds: number } | null;
+  fastest: { word: string; username: string | null; country: string | null; claimed_at: string; seconds: number } | null;
   most_wanted: { word: string; claim_count: number } | null;
 };
 
@@ -112,9 +113,7 @@ export function StatsView() {
                 </Link>
                 <p className="mt-1 text-muted">
                   por{" "}
-                  <Link href={`/u/${s.fastest.username}`} className="text-text font-bold hover:text-lime">
-                    {countryFlag(s.fastest.country)} @{s.fastest.username}
-                  </Link>{" "}
+                  <UserLink username={s.fastest.username} country={s.fastest.country} className="text-text font-bold" />{" "}
                   a los <b className="text-text font-mono">{formatSinceReset(s.fastest.seconds)}</b> del 1 de enero
                 </p>
                 <p className="text-xs text-muted mt-1">{formatClaimDate(s.fastest.claimed_at, { withYear: true })} (tu hora)</p>

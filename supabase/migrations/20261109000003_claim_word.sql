@@ -51,13 +51,13 @@ begin
   select * into v_lim from public.claim_limits();
   insert into public.claim_attempts (user_id, ip, attempted_at) values (p_user_id, p_ip, v_now);
   select count(*) into v_user_n from public.claim_attempts
-    where user_id = p_user_id and attempted_at > v_now - interval '1 minute';
+    where user_id = p_user_id and attempted_at > v_now - interval '1 minute' and attempted_at <= v_now;
   if v_user_n > v_lim.per_user then
     return jsonb_build_object('status', 'rate_limited', 'retry_after', 60);
   end if;
   if p_ip is not null then
     select count(*) into v_ip_n from public.claim_attempts
-      where ip = p_ip and attempted_at > v_now - interval '1 minute';
+      where ip = p_ip and attempted_at > v_now - interval '1 minute' and attempted_at <= v_now;
     if v_ip_n > v_lim.per_ip then
       return jsonb_build_object('status', 'rate_limited', 'retry_after', 60);
     end if;
@@ -125,7 +125,7 @@ as $$
                     where word = p_claim.word and year = p_claim.year),
     'owner', (
       select jsonb_build_object('username', p.username, 'country', p.country, 'claimed_at', c.claimed_at)
-      from public.claims c join public.profiles p on p.id = c.user_id
+      from public.claims c left join public.profiles p on p.id = c.user_id
       where c.word = p_claim.word and c.year = p_claim.year and c.position = 1
     )
   )

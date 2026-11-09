@@ -88,6 +88,25 @@ describe.skipIf(!hasDb)("base de datos", () => {
       expect(rows[0].claim_count).toBe(1);
     });
 
+    it("si alguien borra su cuenta, el historial y las posiciones se conservan", async () => {
+      const word = await freshWord();
+      const [a, b, c] = [await createUser(), await createUser(), await createUser()];
+      await claimNow(a.id, word);
+      await claimNow(b.id, word);
+      await pool.query("delete from auth.users where id = $1", [a.id]); // borra perfil en cascada
+
+      const rc = await claimNow(c.id, word);
+      expect(rc).toMatchObject({ status: "joined", position: 3, total: 3 });
+      expect(rc.owner).toMatchObject({ username: null });
+
+      const { rows } = await pool.query("select * from public.word_claimants($1, $2)", [word, rc.year]);
+      expect(rows.map((r) => [r.position, r.username])).toEqual([
+        [1, null],
+        [2, b.username],
+        [3, c.username],
+      ]);
+    });
+
     it("la restricción UNIQUE de Postgres impide dos dueños aunque se salte la función", async () => {
       const word = await freshWord();
       const [a, b] = [await createUser(), await createUser()];
@@ -132,8 +151,10 @@ describe.skipIf(!hasDb)("base de datos", () => {
     it("year_stats calcula la palabra más rápida tras el reinicio", async () => {
       const word = await freshWord();
       const u = await createUser();
-      await claimAt(u.id, word, "2040-01-01T00:00:00.250Z");
-      const { rows } = await pool.query("select public.year_stats(2040) as s");
+      // Año aleatorio: el test es repetible aunque la BD persista entre ejecuciones.
+      const year = 2100 + Math.floor(Math.random() * 7000);
+      await claimAt(u.id, word, `${year}-01-01T00:00:00.250Z`);
+      const { rows } = await pool.query("select public.year_stats($1) as s", [year]);
       expect(rows[0].s.fastest).toMatchObject({ word, username: u.username, seconds: 0.25 });
       expect(rows[0].s.words_conquered).toBe(1);
       expect(Number(rows[0].s.dictionary_total)).toBeGreaterThan(90000);
@@ -257,8 +278,11 @@ describe.skipIf(!hasDb)("base de datos", () => {
       const u = await createUser("CO");
       const word = await freshWord();
       await claimNow(u.id, word);
+      // En la simulación se guarda en realtime.sent_messages; en Supabase real, en realtime.messages.
+      const { rows: shim } = await pool.query("select to_regclass('realtime.sent_messages') is not null as ok");
+      const table = shim[0].ok ? "realtime.sent_messages" : "realtime.messages";
       const { rows } = await pool.query(
-        "select * from realtime.sent_messages where payload->>'word' = $1",
+        `select topic, event, private, payload from ${table} where payload->>'word' = $1`,
         [word],
       );
       expect(rows).toHaveLength(1);

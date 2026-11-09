@@ -20,7 +20,7 @@ language sql stable security definer set search_path = public as $$
     'word',   w.v,
     'exists', exists (select 1 from public.dictionary_words d where d.word = w.v),
     'total',  coalesce((select claim_count from public.word_counters c where c.word = w.v and c.year = w.y), 0),
-    'owner',  (select p.username from public.claims c join public.profiles p on p.id = c.user_id
+    'owner',  (select p.username from public.claims c left join public.profiles p on p.id = c.user_id
                where c.word = w.v and c.year = w.y and c.position = 1)
   )
   from w

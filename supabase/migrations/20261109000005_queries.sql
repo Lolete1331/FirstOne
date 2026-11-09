@@ -17,7 +17,7 @@ returns table (id bigint, word text, year smallint, "position" int, claimed_at t
                username text, country char(2))
 language sql stable as $$
   select c.id, c.word, c.year, c.position, c.claimed_at, p.username, p.country
-  from public.claims c join public.profiles p on p.id = c.user_id
+  from public.claims c left join public.profiles p on p.id = c.user_id
   where not p_only_firsts or c.position = 1
   order by c.claimed_at desc
   limit least(greatest(p_limit, 1), 100)
@@ -35,7 +35,7 @@ language sql stable as $$
            count(*) filter (where c.position = 1) as medals,
            count(*) as words,
            min(c.claimed_at) filter (where c.position = 1) as first_medal
-    from public.claims c, y where c.year = y.v
+    from public.claims c, y where c.year = y.v and c.user_id is not null
     group by c.user_id
   )
   select rank() over (order by a.medals desc, a.words desc) as rank,
@@ -97,7 +97,7 @@ language sql stable as $$
          extract(epoch from c.claimed_at - public.year_start(wc.year))
   from public.word_counters wc
   join public.claims c on c.word = wc.word and c.year = wc.year and c.position = 1
-  join public.profiles p on p.id = c.user_id
+  left join public.profiles p on p.id = c.user_id
   where wc.word = public.normalize_word(p_word)
   order by wc.year desc
 $$;
@@ -107,7 +107,7 @@ create or replace function public.word_claimants(p_word text, p_year int, p_offs
 returns table ("position" int, username text, country char(2), claimed_at timestamptz)
 language sql stable as $$
   select c.position, p.username, p.country, c.claimed_at
-  from public.claims c join public.profiles p on p.id = c.user_id
+  from public.claims c left join public.profiles p on p.id = c.user_id
   where c.word = public.normalize_word(p_word) and c.year = p_year
     and c.position > greatest(p_offset, 0)
   order by c.position
@@ -128,7 +128,7 @@ language sql stable as $$
   from q
   join public.word_counters wc on wc.year = q.y and wc.word like q.prefix || '%'
   join public.claims c on c.word = wc.word and c.year = wc.year and c.position = 1
-  join public.profiles p on p.id = c.user_id
+  left join public.profiles p on p.id = c.user_id
   order by case when q.prefix = '' then null else wc.word end, c.claimed_at desc
   limit least(greatest(p_limit, 1), 200) offset greatest(p_offset, 0)
 $$;
@@ -154,7 +154,7 @@ language sql stable as $$
   fastest as (
     select c.word, p.username, p.country, c.claimed_at,
            extract(epoch from c.claimed_at - public.year_start(y.v)) as seconds
-    from public.claims c join public.profiles p on p.id = c.user_id, y
+    from public.claims c left join public.profiles p on p.id = c.user_id, y
     where c.year = y.v and c.position = 1
     order by c.claimed_at asc limit 1
   ),
@@ -166,7 +166,7 @@ language sql stable as $$
     'year',             (select v from y),
     'words_conquered',  counters.conquered,
     'total_claims',     counters.claims,
-    'players',          (select count(distinct user_id) from public.claims, y where year = y.v),
+    'players',          (select count(distinct user_id) from public.claims, y where year = y.v),  -- count ignora NULL
     'dictionary_total', dict.n,
     'percent',          case when dict.n = 0 then 0 else round(counters.conquered * 100.0 / dict.n, 4) end,
     'fastest',          (select to_jsonb(f) from fastest f),

@@ -6,6 +6,7 @@ import { NAV_ITEMS } from "./nav-items";
 import { useAuth } from "./auth-provider";
 import { CountdownChip } from "./countdown";
 import { countryFlag } from "@/lib/countries";
+import { useHydrated } from "@/lib/hooks/use-hydrated";
 
 export function Logo() {
   return (
@@ -33,7 +34,12 @@ export function HeaderShell() {
 
 export function Header() {
   const pathname = usePathname();
-  const { user, profile, loading } = useAuth();
+  const auth = useAuth();
+  // La cabecera se hidrata dentro de un Suspense, cuando la sesión puede estar ya cargada:
+  // hasta terminar la hidratación pintamos lo mismo que el servidor (el esqueleto).
+  const hydrated = useHydrated();
+  const loading = auth.loading || !hydrated;
+  const { user, profile } = auth;
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-bg/60 border-b border-line">

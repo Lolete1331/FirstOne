@@ -9,7 +9,7 @@ export type FeedItem = {
   year: number;
   position: number;
   claimed_at: string;
-  username: string;
+  username: string | null;
   country: string | null;
   /** true si llegó por tiempo real (para animarlo) */
   fresh?: boolean;

@@ -7,13 +7,14 @@ import { useRpc } from "@/lib/hooks/use-rpc";
 import { getSupabase } from "@/lib/supabase/client";
 import { Empty, PageTitle, Skeleton, YearSelect } from "@/components/ui";
 import { MedalBadge } from "@/components/medal";
+import { UserLink } from "@/components/user-link";
 import { countryFlag } from "@/lib/countries";
 import { currentGameYear, formatClaimDate, formatPreciseTime, formatSinceReset } from "@/lib/time/year";
 import { normalizeWord } from "@/lib/words/normalize";
 
-type SearchRow = { word: string; year: number; total: number; owner: string; owner_country: string | null; owner_claimed_at: string };
-type YearRow = { year: number; total: number; owner: string; owner_country: string | null; owner_claimed_at: string; seconds_after_reset: number };
-type Claimant = { position: number; username: string; country: string | null; claimed_at: string };
+type SearchRow = { word: string; year: number; total: number; owner: string | null; owner_country: string | null; owner_claimed_at: string };
+type YearRow = { year: number; total: number; owner: string | null; owner_country: string | null; owner_claimed_at: string; seconds_after_reset: number };
+type Claimant = { position: number; username: string | null; country: string | null; claimed_at: string };
 
 export function HistoryView() {
   const router = useRouter();
@@ -48,7 +49,8 @@ export function HistoryView() {
         }}
         className="mt-6 flex flex-wrap gap-3"
       >
-        <div className="flex-1 min-w-60 flex items-center rounded-2xl bg-surface-2 border border-line focus-within:border-lime/70 transition-colors">
+        <div className="flex-1 min-w-0 basis-full sm:basis-auto flex gap-2">
+        <div className="flex-1 min-w-0 flex items-center rounded-2xl bg-surface-2 border border-line focus-within:border-lime/70 transition-colors">
           <span className="pl-4 text-muted">⌕</span>
           <input
             value={query}
@@ -65,8 +67,9 @@ export function HistoryView() {
             </button>
           )}
         </div>
+        <button className="shrink-0 rounded-2xl bg-lime text-bg font-bold px-4 sm:px-5">Ver</button>
+        </div>
         {!selected && <YearSelect value={year} onChange={setYear} />}
-        <button className="rounded-2xl bg-lime text-bg font-bold px-5">Ver palabra</button>
       </form>
 
       <AnimatePresence mode="wait">
@@ -91,7 +94,7 @@ export function HistoryView() {
                       <MedalBadge />
                       <span className="font-display font-bold truncate group-hover:text-lime transition-colors">{r.word}</span>
                       <span className="ml-auto text-sm text-muted truncate">
-                        {countryFlag(r.owner_country)} @{r.owner}
+                        {r.owner ? `${countryFlag(r.owner_country)} @${r.owner}` : "cuenta eliminada"}
                       </span>
                       <span className="text-xs font-mono text-muted w-10 text-right">×{r.total}</span>
                     </button>
@@ -161,23 +164,23 @@ function YearCard({ word, row }: { word: string; row: YearRow }) {
 
   return (
     <div className="card p-5">
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex items-start justify-between gap-4">
         <span className="font-display font-black text-3xl text-muted/60">{row.year}</span>
-        <div className="flex items-center gap-3">
+        <div className="text-right">
+          <p className="font-mono font-bold text-xl">{row.total.toLocaleString("es")}</p>
+          <p className="text-xs text-muted">{row.total === 1 ? "persona" : "personas"}</p>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <MedalBadge className="size-8 text-sm" />
           <div>
-            <Link href={`/u/${row.owner}`} className="font-display font-bold text-lg hover:text-lime">
-              {countryFlag(row.owner_country)} @{row.owner}
-            </Link>
+            <UserLink username={row.owner} country={row.owner_country} className="font-display font-bold text-lg" />
             <p className="text-sm text-muted">
               el {formatClaimDate(row.owner_claimed_at, { withYear: true })} ·{" "}
               <span className="font-mono">{formatPreciseTime(row.owner_claimed_at)}</span>
             </p>
           </div>
-        </div>
-        <div className="ml-auto text-right">
-          <p className="font-mono font-bold text-xl">{row.total.toLocaleString("es")}</p>
-          <p className="text-xs text-muted">{row.total === 1 ? "persona" : "personas"}</p>
         </div>
       </div>
       <p className="mt-3 text-xs text-muted">Conquistada {formatSinceReset(row.seconds_after_reset)} después del reinicio</p>
@@ -202,9 +205,7 @@ function YearCard({ word, row }: { word: string; row: YearRow }) {
                   <span className="w-14 text-right font-mono text-muted">
                     {c.position === 1 ? <MedalBadge /> : `#${c.position.toLocaleString("es")}`}
                   </span>
-                  <Link href={`/u/${c.username}`} className="truncate hover:text-lime">
-                    {countryFlag(c.country)} @{c.username}
-                  </Link>
+                  <UserLink username={c.username} country={c.country} className="truncate" />
                   <span className="ml-auto font-mono text-xs text-muted">{formatClaimDate(c.claimed_at)}</span>
                 </li>
               ))}

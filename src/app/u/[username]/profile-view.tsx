@@ -43,19 +43,19 @@ export function ProfileView({ username }: { username: string }) {
     <div className="pt-8">
       <div className="card relative overflow-hidden p-6 sm:p-8">
         <div className="absolute -right-10 -top-10 size-48 rounded-full bg-violet/30 blur-3xl" />
-        <div className="relative flex flex-wrap items-center gap-5">
-          <span className="grid place-items-center size-20 rounded-3xl bg-gradient-to-br from-violet via-pink to-gold font-display font-black text-4xl uppercase">
+        <div className="relative flex flex-wrap items-center gap-4 sm:gap-5">
+          <span className="grid place-items-center size-14 sm:size-20 shrink-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-violet via-pink to-gold font-display font-black text-2xl sm:text-4xl uppercase">
             {p.username[0]}
           </span>
-          <div className="min-w-0">
-            <h1 className="font-display font-black text-3xl sm:text-4xl truncate">@{p.username}</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="font-display font-black text-2xl sm:text-4xl truncate">@{p.username}</h1>
             <p className="text-muted">
               {p.country ? `${countryFlag(p.country)} ${countryName(p.country)} · ` : ""}
               jugando desde {formatClaimDate(p.created_at, { withYear: true }).split(" a las")[0]}
             </p>
           </div>
           {isMe && (
-            <div className="ml-auto flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto sm:ml-auto">
               <Link href="/onboarding" className="rounded-full border border-line px-4 py-2 text-sm hover:border-lime/60">
                 Editar
               </Link>

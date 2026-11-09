@@ -17,7 +17,7 @@ export type ClaimResponse = {
   position?: number;
   total?: number;
   claimed_at?: string;
-  owner?: { username: string; country: string | null; claimed_at: string } | null;
+  owner?: { username: string | null; country: string | null; claimed_at: string } | null;
   retry_after?: number;
   message?: string;
 };
