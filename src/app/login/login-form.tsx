@@ -54,16 +54,16 @@ export function LoginForm() {
         <form onSubmit={withCode} className="mt-5 space-y-3">
           <input
             value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
             inputMode="numeric"
             autoComplete="one-time-code"
             autoFocus
-            placeholder="000000"
-            aria-label="Código de 6 dígitos"
+            placeholder="código"
+            aria-label="Código del correo"
             className="w-full text-center font-mono text-3xl tracking-[0.4em] rounded-2xl bg-surface-2 border border-line px-4 py-3 outline-none focus:border-lime/70"
           />
           <button
-            disabled={code.length !== 6 || verifying}
+            disabled={code.length < 6 || verifying}
             className="w-full rounded-2xl bg-lime text-bg font-bold py-3.5 disabled:opacity-40 glow-lime"
           >
             {verifying ? "Comprobando…" : "Entrar"}
