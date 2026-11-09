@@ -224,6 +224,34 @@ describe.skipIf(!hasDb)("base de datos", () => {
     });
   });
 
+  describe("ayudas de la UI", () => {
+    it("username_available ignora mayúsculas y valida el formato", async () => {
+      const u = await createUser();
+      const q = async (n: string) =>
+        (await asRole<{ a: boolean }>("anon", null, "select public.username_available($1) as a", [n]))[0].a;
+      expect(await q(u.username.toUpperCase())).toBe(false);
+      expect(await q("libre_del_todo")).toBe(true);
+      expect(await q("no válido")).toBe(false);
+    });
+
+    it("word_status informa si existe, el dueño y cuántos la mandaron este año", async () => {
+      const word = await freshWord();
+      const [a, b] = [await createUser(), await createUser()];
+      await claimNow(a.id, word);
+      await claimNow(b.id, word);
+      const [{ s }] = await asRole<{ s: Record<string, unknown> }>("anon", null, "select public.word_status($1) as s", [
+        word.toUpperCase(),
+      ]);
+      expect(s).toEqual({ word, exists: true, total: 2, owner: a.username });
+      const [{ s: none }] = await asRole<{ s: Record<string, unknown> }>(
+        "anon",
+        null,
+        "select public.word_status('xqzwv') as s",
+      );
+      expect(none).toMatchObject({ exists: false, total: 0, owner: null });
+    });
+  });
+
   describe("feed en vivo", () => {
     it("cada reclamación se emite al canal live-feed con el @usuario", async () => {
       const u = await createUser("CO");
