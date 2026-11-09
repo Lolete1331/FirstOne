@@ -1,17 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { AUTH_COOKIE_NAME } from "@/lib/env";
 
 /**
  * Refresca la sesión de Supabase en cada navegación (los tokens caducan cada hora)
  * para que los route handlers vean siempre una sesión válida.
  */
 export async function proxy(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return NextResponse.next();
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(url, key, {
+    cookieOptions: { name: AUTH_COOKIE_NAME },
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (toSet, headers) => {

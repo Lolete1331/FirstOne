@@ -1,11 +1,15 @@
 "use client";
 import { useState, type FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { getSupabase } from "@/lib/supabase/client";
 
 export function LoginForm() {
+  const router = useRouter();
   const params = useSearchParams();
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [codeError, setCodeError] = useState(false);
   const next = params.get("next") ?? "/";
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">(params.get("error") ? "error" : "idle");
@@ -18,6 +22,23 @@ export function LoginForm() {
     setState(error ? "error" : "sent");
   }
 
+  async function withCode(e: FormEvent) {
+    e.preventDefault();
+    setVerifying(true);
+    setCodeError(false);
+    const supabase = getSupabase();
+    const { data, error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
+    if (error || !data.user) {
+      setVerifying(false);
+      setCodeError(true);
+      return;
+    }
+    const { data: profile } = await supabase.from("profiles").select("id").eq("id", data.user.id).maybeSingle();
+    // Navegación completa para que el servidor vea la cookie de sesión nueva.
+    window.location.assign(profile ? next : `/onboarding?next=${encodeURIComponent(next)}`);
+    router.refresh();
+  }
+
   async function withGoogle() {
     await getSupabase().auth.signInWithOAuth({ provider: "google", options: { redirectTo: redirectTo() } });
   }
@@ -28,8 +49,27 @@ export function LoginForm() {
         <p className="text-4xl">📬</p>
         <p className="mt-2 font-display font-bold text-xl">Mira tu correo</p>
         <p className="mt-1 text-muted">
-          Te hemos enviado un enlace mágico a <b className="text-text">{email}</b>. Ábrelo en este dispositivo.
+          Te hemos enviado un código a <b className="text-text">{email}</b>. Escríbelo aquí o pulsa el enlace del correo.
         </p>
+        <form onSubmit={withCode} className="mt-5 space-y-3">
+          <input
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            autoFocus
+            placeholder="000000"
+            aria-label="Código de 6 dígitos"
+            className="w-full text-center font-mono text-3xl tracking-[0.4em] rounded-2xl bg-surface-2 border border-line px-4 py-3 outline-none focus:border-lime/70"
+          />
+          <button
+            disabled={code.length !== 6 || verifying}
+            className="w-full rounded-2xl bg-lime text-bg font-bold py-3.5 disabled:opacity-40 glow-lime"
+          >
+            {verifying ? "Comprobando…" : "Entrar"}
+          </button>
+          {codeError && <p className="text-danger text-sm">Código incorrecto o caducado.</p>}
+        </form>
       </motion.div>
     );
   }
@@ -65,7 +105,7 @@ export function LoginForm() {
           disabled={state === "sending"}
           className="w-full rounded-2xl bg-lime text-bg font-bold py-3.5 disabled:opacity-50 glow-lime"
         >
-          {state === "sending" ? "Enviando…" : "Enviarme un enlace mágico"}
+          {state === "sending" ? "Enviando…" : "Enviarme un código"}
         </button>
       </form>
       {state === "error" && <p className="text-danger text-sm">No hemos podido iniciar sesión. Inténtalo de nuevo.</p>}

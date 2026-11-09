@@ -103,7 +103,8 @@ Lanza la app:
 npm run dev
 ```
 
-Abre <http://localhost:3000>. Los correos del enlace mágico de inicio de sesión llegan al
+Abre <http://localhost:3000>. Para entrar, escribe tu email y luego el código de 6 dígitos
+(o pulsa el enlace). Los correos de inicio de sesión llegan al
 buzón de pruebas de Supabase: <http://127.0.0.1:54324> (Mailpit).
 
 > **Login con Google en local (opcional):** crea credenciales OAuth en Google Cloud con la
@@ -172,9 +173,12 @@ Lo que cubren los tests de BD (`tests/db/claims.test.ts`):
 4. **Auth → URL Configuration:**
    - *Site URL* = `https://tu-dominio.com`
    - *Redirect URLs* = `https://tu-dominio.com/auth/callback`
-5. **Auth → Providers:** activa *Email* (enlace mágico) y *Google* (Client ID y Secret de
+5. **Auth → Email Templates → Magic Link:** pega el contenido de
+   `supabase/templates/magic_link.html`. Así el correo incluye el **código de 6 dígitos**
+   (`{{ .Token }}`) además del enlace, y se puede entrar escribiendo el código.
+6. **Auth → Providers:** activa *Email* (enlace mágico) y *Google* (Client ID y Secret de
    Google Cloud, con la URI de redirección que indica Supabase).
-6. Copia de *Project Settings → API Keys* la **Publishable key** y la **Secret key**.
+7. Copia de *Project Settings → API Keys* la **Publishable key** y la **Secret key**.
 
 ### 2. Cloudflare Turnstile
 
