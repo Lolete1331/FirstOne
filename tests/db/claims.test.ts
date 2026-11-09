@@ -273,6 +273,82 @@ describe.skipIf(!hasDb)("base de datos", () => {
     });
   });
 
+  describe("administración", () => {
+    async function makeAdmin() {
+      const u = await createUser();
+      await pool.query("select public.make_admin($1)", [u.username]);
+      return u;
+    }
+
+    it("nadie puede hacerse admin ni desbloquearse desde la app", async () => {
+      const u = await createUser();
+      await expect(
+        asRole("authenticated", u.id, "update public.profiles set is_admin = true where id = $1", [u.id]),
+      ).rejects.toThrow(/forbidden/);
+      await expect(asRole("authenticated", u.id, "select public.make_admin($1)", [u.username])).rejects.toThrow(
+        /permission denied/,
+      );
+      // Insertar el perfil con is_admin = true lo ignora
+      const { randomUUID } = await import("node:crypto");
+      const id = randomUUID();
+      await pool.query("insert into auth.users (id) values ($1)", [id]);
+      await asRole("authenticated", id, "insert into public.profiles (id, username, is_admin) values ($1, $2, true)", [
+        id,
+        `sneaky_${id.slice(0, 6)}`,
+      ]);
+      const { rows } = await pool.query("select is_admin from public.profiles where id = $1", [id]);
+      expect(rows[0].is_admin).toBe(false);
+    });
+
+    it("las funciones de admin rechazan a usuarios normales", async () => {
+      const u = await createUser();
+      await expect(asRole("authenticated", u.id, "select public.admin_overview()")).rejects.toThrow(/forbidden/);
+      await expect(asRole("anon", null, "select * from public.admin_search_users('')")).rejects.toThrow(/forbidden/);
+      const admin = await makeAdmin();
+      const [{ o }] = await asRole<{ o: { users_total: number } }>("authenticated", admin.id, "select public.admin_overview() as o");
+      expect(Number(o.users_total)).toBeGreaterThan(0);
+    });
+
+    it("un usuario bloqueado no puede reclamar", async () => {
+      const admin = await makeAdmin();
+      const u = await createUser();
+      await asRole("authenticated", admin.id, "select public.admin_set_ban($1, true, 'bot')", [u.id]);
+      expect((await claimNow(u.id, await freshWord())).status).toBe("banned");
+      await asRole("authenticated", admin.id, "select public.admin_set_ban($1, false)", [u.id]);
+      expect((await claimNow(u.id, await freshWord())).status).toBe("won");
+    });
+
+    it("anular una reclamación sube un puesto a los siguientes y la #2 hereda la medalla", async () => {
+      const admin = await makeAdmin();
+      const word = await freshWord();
+      const [a, b, c] = [await createUser(), await createUser(), await createUser()];
+      const ra = await claimNow(a.id, word);
+      await claimNow(b.id, word);
+      await claimNow(c.id, word);
+      await asRole("authenticated", admin.id, "select public.admin_void_claim($1, $2, $3)", [word, ra.year, a.id]);
+      const { rows } = await pool.query("select * from public.word_claimants($1, $2)", [word, ra.year]);
+      expect(rows.map((r) => [r.position, r.username])).toEqual([
+        [1, b.username],
+        [2, c.username],
+      ]);
+      const { rows: wc } = await pool.query("select claim_count from public.word_counters where word = $1", [word]);
+      expect(wc[0].claim_count).toBe(2);
+      // La siguiente persona entra como #3
+      expect(await claimNow((await createUser()).id, word)).toMatchObject({ status: "joined", position: 3 });
+    });
+
+    it("las palabras ocultas no salen en el feed", async () => {
+      const admin = await makeAdmin();
+      const word = await freshWord();
+      await asRole("authenticated", admin.id, "select public.admin_hide_word($1)", [word]);
+      await claimNow((await createUser()).id, word);
+      const { rows } = await pool.query("select word from public.recent_claims(100) where word = $1", [word]);
+      expect(rows).toHaveLength(0);
+      const [{ n }] = await asRole<{ n: number }>("authenticated", admin.id, "select count(*)::int as n from public.admin_recent_log() where target = $1", [word]);
+      expect(n).toBe(1);
+    });
+  });
+
   describe("feed en vivo", () => {
     it("cada reclamación se emite al canal live-feed con el @usuario", async () => {
       const u = await createUser("CO");

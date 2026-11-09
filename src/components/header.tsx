@@ -67,6 +67,12 @@ export function Header() {
           {loading ? (
             <span className="size-9 rounded-full bg-surface-2 animate-pulse" />
           ) : profile ? (
+            <>
+            {profile.is_admin && (
+              <Link href="/admin" className="rounded-full border border-pink/50 text-pink text-xs font-bold px-3 py-1.5 hover:bg-pink/10">
+                Admin
+              </Link>
+            )}
             <Link
               href={`/u/${profile.username}`}
               className="flex items-center gap-2 rounded-full bg-surface-2 border border-line pl-1 pr-3 py-1 hover:border-lime/60 transition-colors"
@@ -78,6 +84,7 @@ export function Header() {
                 {countryFlag(profile.country)} @{profile.username}
               </span>
             </Link>
+            </>
           ) : user ? (
             <Link href="/onboarding" className="rounded-full bg-pink text-white text-sm font-bold px-4 py-2">
               Elige tu @

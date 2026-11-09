@@ -332,6 +332,15 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
           <p className="mt-2 text-muted">Máximo 10 palabras por minuto. Respira y vuelve en unos segundos.</p>
         </>,
       );
+    case "banned":
+      return shell(
+        "border-danger/40",
+        <>
+          <p className="text-4xl mb-2">⛔</p>
+          <p className="font-display font-black text-2xl">Tu cuenta está bloqueada</p>
+          <p className="mt-2 text-muted">Un administrador ha suspendido tu cuenta por incumplir las reglas del juego.</p>
+        </>,
+      );
     case "human_required":
       return shell("border-pink/40", <p className="text-muted">No hemos podido comprobar que eres humano. Recarga la página e inténtalo de nuevo.</p>);
     default:

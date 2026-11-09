@@ -4,7 +4,14 @@ import type { User } from "@supabase/supabase-js";
 import { getSupabase } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/env";
 
-export type Profile = { id: string; username: string; country: string | null; username_changes: number };
+export type Profile = {
+  id: string;
+  username: string;
+  country: string | null;
+  username_changes: number;
+  is_admin: boolean;
+  banned_at: string | null;
+};
 
 type AuthState = {
   loading: boolean;
@@ -25,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!u) return setProfile(null);
     const { data } = await getSupabase()
       .from("profiles")
-      .select("id, username, country, username_changes")
+      .select("id, username, country, username_changes, is_admin, banned_at")
       .eq("id", u.id)
       .maybeSingle();
     setProfile((data as Profile) ?? null);

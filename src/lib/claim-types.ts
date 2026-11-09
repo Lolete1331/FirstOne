@@ -5,6 +5,7 @@ export type ClaimStatus =
   | "already_yours" // ya la habías mandado este año
   | "invalid" // no está en el diccionario
   | "rate_limited"
+  | "banned" // cuenta bloqueada por un admin
   | "no_profile"
   | "unauthenticated"
   | "human_required"

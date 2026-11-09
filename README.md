@@ -203,12 +203,35 @@ Necesitarás la *Site key* y la *Secret key*.
 
 ---
 
+## Administración
+
+Panel en **`/admin`**, solo visible para cuentas con permiso de admin. Desde ahí puedes:
+
+- Ver métricas en vivo: reclamaciones por minuto, por hora y del día, usuarios nuevos y quién hace más intentos (posibles bots).
+- **Bloquear y desbloquear** usuarios. Un usuario bloqueado no puede reclamar palabras.
+- **Anular reclamaciones.** Los que llegaron después suben un puesto, y si era la #1, la #2 hereda la medalla.
+- **Ocultar palabras ofensivas** del feed y del buscador.
+- Revisar el **registro** de todas las acciones de admin.
+
+Los permisos los comprueba Postgres en cada función de admin (`assert_admin()`), no solo la
+interfaz. Nadie puede darse permisos de admin desde la app.
+
+**Hacerte admin:** regístrate en la app, elige tu @usuario y ejecuta una sola vez en el
+*SQL Editor* de Supabase:
+
+```sql
+select public.make_admin('tu_usuario');
+```
+
+Para quitar el permiso: `select public.make_admin('tu_usuario', false);`
+
 ## Estructura
 
 ```
 supabase/
   migrations/      0001 diccionario · 0002 perfiles y reclamaciones · 0003 claim_word()
                    0004 feed en tiempo real · 0005 consultas (rankings, historial, stats) · 0006 ayudas de UI
+                   0007 administración (admins, bloqueos, anular reclamaciones, palabras ocultas)
   data/dictionary.tsv
 scripts/           build-dictionary.ts · load-dictionary.ts · test-db.sh
 src/
