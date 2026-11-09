@@ -11,9 +11,8 @@ import { useHydrated } from "@/lib/hooks/use-hydrated";
 export function Logo() {
   return (
     <Link href="/" className="group flex items-center gap-2 font-display font-black tracking-tight text-lg">
-      <span className="grid place-items-center size-8 rounded-xl bg-lime text-bg text-sm group-hover:rotate-[-8deg] transition-transform">
-        1
-      </span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/icon.svg" alt="" width={34} height={34} className="size-[34px] group-hover:rotate-[-8deg] transition-transform" />
       <span>
         First<span className="text-gradient">One</span>
       </span>
