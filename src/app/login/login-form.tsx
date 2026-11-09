@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { getSupabase } from "@/lib/supabase/client";
+import { GOOGLE_AUTH_ENABLED } from "@/lib/env";
 
 export function LoginForm() {
   const router = useRouter();
@@ -76,6 +77,8 @@ export function LoginForm() {
 
   return (
     <div className="mt-8 space-y-4">
+      {GOOGLE_AUTH_ENABLED && (
+        <>
       <button
         onClick={withGoogle}
         className="w-full flex items-center justify-center gap-3 rounded-2xl bg-text text-bg font-bold py-3.5 hover:bg-lime transition-colors"
@@ -91,6 +94,8 @@ export function LoginForm() {
       <div className="flex items-center gap-3 text-xs text-muted">
         <span className="h-px flex-1 bg-line" /> o con tu email <span className="h-px flex-1 bg-line" />
       </div>
+        </>
+      )}
       <form onSubmit={withEmail} className="space-y-3">
         <input
           type="email"
