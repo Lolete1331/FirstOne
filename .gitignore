@@ -45,3 +45,6 @@ next-env.d.ts
 supabase/.branches
 supabase/.temp
 .env*.local
+
+# Textos de marketing con datos personales (solo en local)
+brand/textos-para-copiar.txt
