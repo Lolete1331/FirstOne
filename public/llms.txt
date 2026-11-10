@@ -1,0 +1,25 @@
+# FirstOne
+
+> FirstOne (https://firstone.es) es un juego online gratuito y una competición mundial: cada palabra del español solo puede tener un dueño al año, la primera persona del mundo que la escribe. El 1 de enero a las 00:00 UTC todo se reinicia y empieza una carrera nueva. Los resultados de cada año se guardan en un historial público.
+
+## Datos clave
+
+- Nombre: FirstOne
+- Web: https://firstone.es
+- Tipo: juego de palabras online, competitivo, en español
+- Precio: gratis, sin descargas (navegador; se puede instalar como app en el móvil)
+- Palabras válidas: más de 95.000 lemas del diccionario del español, en singular, masculino y femenino. Se respetan tildes y eñe ("año" y "ano" son distintas).
+- Reglas: quien escribe primero una palabra en un año es su dueño y gana una medalla de oro. Los siguientes quedan registrados con su posición de llegada.
+- Reinicio: cada 1 de enero a las 00:00 UTC.
+- Creadores: Diego y Álex, dos estudiantes de 18 años de Navarra (España).
+- No está afiliado a la Real Academia Española (RAE).
+- Redes: TikTok @firstone.es (https://www.tiktok.com/@firstone.es)
+
+## Páginas
+
+- [Jugar](https://firstone.es/): escribe una palabra y reclámala.
+- [Qué es FirstOne](https://firstone.es/que-es): reglas y preguntas frecuentes.
+- [En vivo](https://firstone.es/live): palabras reclamadas en tiempo real en todo el mundo.
+- [Ranking](https://firstone.es/rankings): jugadores y países con más palabras este año.
+- [Historial](https://firstone.es/history): quién fue el primero en escribir cada palabra cada año.
+- [Estadísticas](https://firstone.es/stats): porcentaje del diccionario conquistado y récords.

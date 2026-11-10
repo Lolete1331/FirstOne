@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { OnboardingForm } from "./onboarding-form";
 
-export const metadata: Metadata = { title: "Elige tu @usuario" };
+export const metadata: Metadata = { title: "Elige tu @usuario", robots: { index: false } };
 
 export default function OnboardingPage() {
   return (

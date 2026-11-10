@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ClaimBox } from "@/components/claim-box";
 import { CountdownBig } from "@/components/countdown";
 import { HomeFeed } from "@/components/home-feed";
@@ -33,6 +34,12 @@ export default function Home() {
         <CountdownBig />
         <HomeFeed />
       </section>
+
+      <footer className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
+        <Link href="/que-es" className="hover:text-lime">¿Qué es FirstOne?</Link>
+        <a href="https://www.tiktok.com/@firstone.es" target="_blank" rel="noopener noreferrer" className="hover:text-lime">TikTok @firstone.es</a>
+        <span>Hecho en Navarra por Diego y Álex</span>
+      </footer>
     </div>
   );
 }
