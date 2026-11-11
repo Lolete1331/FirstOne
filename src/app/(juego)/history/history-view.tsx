@@ -134,7 +134,7 @@ function WordDetail({ word, onBack }: { word: string; onBack: () => void }) {
           <div className="card mt-6 p-6 text-center">
             <p className="text-lime font-display font-bold text-xl">✦ Nadie la ha reclamado nunca</p>
             <p className="mt-1 text-muted">
-              <Link href="/" className="underline hover:text-lime">
+              <Link href="/jugar" className="underline hover:text-lime">
                 Sé el primero
               </Link>{" "}
               en la historia de FirstOne.

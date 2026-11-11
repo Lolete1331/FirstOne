@@ -48,7 +48,7 @@ export function AdminView() {
   if (!profile?.is_admin) {
     return (
       <Empty>
-        No tienes acceso a esta página. <Link href="/" className="underline">Volver al juego</Link>
+        No tienes acceso a esta página. <Link href="/jugar" className="underline">Volver al juego</Link>
       </Empty>
     );
   }

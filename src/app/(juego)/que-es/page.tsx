@@ -85,7 +85,7 @@ export default function QueEsPage() {
         <b className="text-text">un dueño al año</b>, la primera persona del mundo que la escribe. El{" "}
         <b className="text-text">1 de enero a las 00:00</b> todo se reinicia y empieza una carrera nueva.
       </p>
-      <Link href="/" className="mt-6 inline-block rounded-full bg-lime text-bg font-display font-black px-7 py-3 glow-lime">
+      <Link href="/jugar" className="mt-6 inline-block rounded-full bg-lime text-bg font-display font-black px-7 py-3 glow-lime">
         Reclamar mi primera palabra
       </Link>
 

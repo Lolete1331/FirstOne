@@ -45,6 +45,14 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt npm run dev`.
 - Guarda capturas y ficheros temporales en el scratchpad, nunca en el repositorio.
 
+## Estructura de la web
+
+- `/` portada con dos opciones · `/jugar` el juego (grupo de rutas `src/app/(juego)/` con su cabecera y menú).
+- `/lectura` sección para niños con dislexia (`src/app/lectura/`, componentes en `src/components/lectura/`,
+  datos en `src/lib/lectura/`): diseño tranquilo propio, ajustes de fondo/letra/tamaño/espaciado guardados en
+  localStorage, voz con speechSynthesis, estrellas solo en el dispositivo. **Sin cuentas ni datos de menores.**
+  Las listas de palabras se separan en sílabas a mano y un test comprueba que existen en el diccionario.
+
 ## Reglas del producto (no romperlas)
 
 - Nunca vender ventaja: pagar no puede dar prioridad ni palabras.
@@ -52,6 +60,8 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
 - Las definiciones salen de Wikcionario (CC BY-SA 4.0, citar siempre) y se cachean en `word_definitions`.
   No copiar contenido del diccionario de la RAE; solo enlazar a dle.rae.es.
 - No afirmar relación con la RAE.
+- Sección de dislexia: lenguaje prudente (no diagnosticar, recomendar profesionales), sin cronómetros ni
+  presión, sin recoger datos de niños.
 - Antes de algo que borre datos de jugadores o sea difícil de deshacer, preguntar al dueño.
 
 ## Ideas pendientes

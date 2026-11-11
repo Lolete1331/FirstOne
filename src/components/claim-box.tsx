@@ -56,8 +56,8 @@ export function ClaimBox() {
       e?.preventDefault();
       const word = sanitize(value);
       if (!word || sending) return;
-      if (!user) return router.push("/login?next=/");
-      if (!profile) return router.push("/onboarding?next=/");
+      if (!user) return router.push("/login?next=/jugar");
+      if (!profile) return router.push("/onboarding?next=/jugar");
 
       setSending(true);
       try {

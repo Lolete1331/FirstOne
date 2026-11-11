@@ -1,45 +1,67 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ClaimBox } from "@/components/claim-box";
-import { CountdownBig } from "@/components/countdown";
-import { HomeFeed } from "@/components/home-feed";
-import { SetupNotice } from "@/components/setup-notice";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: { absolute: "FirstOne — juega con las palabras del español" },
+  alternates: { canonical: "/" },
+};
+
+/** Portada: elegir entre el juego y la sección de lectura (dislexia). */
+export default function Portada() {
   return (
-    <div className="pt-5 sm:pt-14">
-      <SetupNotice />
-      <section className="text-center">
-        <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted">
-          <span className="size-1.5 rounded-full bg-lime animate-pulse" /> Carrera mundial en curso
-        </p>
-        <h1 className="mt-4 font-display font-black text-[1.6rem] sm:text-5xl leading-[1.08] tracking-tight">
-          Cada palabra tiene <span className="text-gradient">un solo dueño</span>.
-          <br className="hidden sm:block" /> Sé el primero en escribirla.
+    <>
+      <div className="fo-backdrop" aria-hidden />
+      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-10 sm:py-16 flex flex-col">
+        <div className="flex items-center justify-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon.svg" alt="" width={52} height={52} className="size-[52px]" />
+          <span className="font-display font-black text-3xl tracking-tight">
+            First<span className="text-gradient">One</span>
+          </span>
+        </div>
+        <h1 className="mt-8 text-center font-display font-black text-3xl sm:text-5xl leading-tight tracking-tight">
+          ¿Qué te apetece hoy?
         </h1>
-        <p className="hidden sm:block mt-4 text-muted max-w-xl mx-auto">
-          95.000 palabras del español. Si eres la primera persona del mundo en escribir una este año, es tuya y te
-          llevas la medalla 🥇. El 1 de enero todo vuelve a empezar.
-        </p>
-      </section>
+        <p className="mt-3 text-center text-muted">Elige una opción para empezar.</p>
 
-      <section className="mt-6 sm:mt-14">
-        <ClaimBox />
-      </section>
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          <Link
+            href="/jugar"
+            className="group card p-7 sm:p-8 flex flex-col hover:border-lime/60 hover:-translate-y-1 transition-all"
+          >
+            <span className="text-5xl">🥇</span>
+            <h2 className="mt-4 font-display font-black text-2xl sm:text-3xl">Adueñarte de palabras</h2>
+            <p className="mt-2 text-muted flex-1">
+              Sé la primera persona del mundo en escribir cada palabra del español. Un solo dueño por palabra al año.
+            </p>
+            <span className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-lime text-bg font-display font-black px-6 py-3 glow-lime group-hover:gap-3 transition-all">
+              Jugar →
+            </span>
+          </Link>
 
-      <p className="sm:hidden mt-6 text-center text-sm text-muted">
-        Si eres la primera persona del mundo en escribirla este año, es tuya 🥇. El 1 de enero todo vuelve a empezar.
-      </p>
+          <Link
+            href="/lectura"
+            className="group rounded-3xl p-7 sm:p-8 flex flex-col border-2 border-[#d9c9a3] bg-[#fbf5e6] text-[#2b2b2b] hover:-translate-y-1 transition-all"
+          >
+            <span className="text-5xl">📚</span>
+            <h2 className="mt-4 font-sans font-bold text-2xl sm:text-3xl">Leer y escribir mejor</h2>
+            <p className="mt-2 text-[#4a4a4a] flex-1 leading-relaxed">
+              Actividades para niños y niñas con dislexia: sílabas, sonidos, letras y dictados. Con colores y letra que se
+              adaptan a cada uno.
+            </p>
+            <span className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#2f6f6a] text-white font-bold px-6 py-3 group-hover:gap-3 transition-all">
+              Empezar →
+            </span>
+          </Link>
+        </div>
 
-      <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-[1fr_1.2fr] [&>*]:min-w-0">
-        <CountdownBig />
-        <HomeFeed />
-      </section>
-
-      <footer className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
-        <Link href="/que-es" className="hover:text-lime">¿Qué es FirstOne?</Link>
-        <a href="https://www.tiktok.com/@firstone.es" target="_blank" rel="noopener noreferrer" className="hover:text-lime">TikTok @firstone.es</a>
-        <span>Hecho en Navarra por Diego y Álex</span>
-      </footer>
-    </div>
+        <footer className="mt-auto pt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted">
+          <Link href="/que-es" className="hover:text-lime">¿Qué es FirstOne?</Link>
+          <a href="https://www.tiktok.com/@firstone.es" target="_blank" rel="noopener noreferrer" className="hover:text-lime">
+            TikTok @firstone.es
+          </a>
+        </footer>
+      </main>
+    </>
   );
 }

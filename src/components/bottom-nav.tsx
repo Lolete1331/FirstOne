@@ -14,7 +14,7 @@ export function BottomNav() {
     >
       <ul className="grid grid-cols-5">
         {NAV_ITEMS.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const active = pathname.startsWith(item.href);
           return (
             <li key={item.href}>
               <Link href={item.href} className="relative flex flex-col items-center gap-0.5 py-2.5 text-[10px] min-[360px]:text-[11px] font-medium whitespace-nowrap tracking-tight">

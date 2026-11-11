@@ -15,9 +15,16 @@
 - No está afiliado a la Real Academia Española (RAE).
 - Redes: TikTok @firstone.es (https://www.tiktok.com/@firstone.es)
 
+## Leer y escribir mejor (dislexia)
+
+Sección gratuita para niños y niñas con dislexia (https://firstone.es/lectura): actividades de sílabas, sonidos iniciales, letras que se confunden (b, d, p, q), ortografía y dictado con voz, y listas de palabras por niveles. Fondo, tipo de letra (Lexend, Atkinson Hyperlegible, OpenDyslexic, Verdana), tamaño y espaciado adaptables. Sin cuentas ni datos personales. No sustituye a un profesional.
+
 ## Páginas
 
-- [Jugar](https://firstone.es/): escribe una palabra y reclámala.
+- [Portada](https://firstone.es/): elige entre el juego y la sección de lectura.
+- [Jugar](https://firstone.es/jugar): escribe una palabra y reclámala.
+- [Leer y escribir mejor](https://firstone.es/lectura): actividades para la dislexia.
+- [Tipos de dislexia](https://firstone.es/lectura/tipos): guía para familias y docentes.
 - [Qué es FirstOne](https://firstone.es/que-es): reglas y preguntas frecuentes.
 - [En vivo](https://firstone.es/live): palabras reclamadas en tiempo real en todo el mundo.
 - [Ranking](https://firstone.es/rankings): jugadores y países con más palabras este año.

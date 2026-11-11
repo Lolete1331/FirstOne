@@ -138,3 +138,83 @@ body {
   background: var(--lime);
   color: var(--bg);
 }
+
+/* ───────────── Sección de lectura (dislexia) ─────────────
+   Colores, letra y espaciado vienen de variables que fija el usuario en Ajustes. */
+.lx-root {
+  background: var(--lx-bg);
+  color: var(--lx-fg);
+  font-family: var(--lx-font);
+  font-size: var(--lx-size);
+  letter-spacing: var(--lx-letter);
+  word-spacing: var(--lx-word);
+  line-height: var(--lx-lh);
+}
+.lx-root h1,
+.lx-root h2,
+.lx-root h3 {
+  line-height: 1.3;
+  font-weight: 700;
+}
+.lx-card {
+  background: var(--lx-card);
+  border: 2px solid var(--lx-line);
+  border-radius: 1.25rem;
+}
+.lx-muted {
+  color: var(--lx-muted);
+}
+.lx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  background: var(--lx-accent);
+  color: var(--lx-on-accent);
+  border-radius: 999px;
+  padding: 0.55em 1.2em;
+  font-weight: 700;
+  min-height: 48px;
+}
+.lx-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  background: var(--lx-card);
+  color: var(--lx-fg);
+  border: 2px solid var(--lx-line);
+  border-radius: 999px;
+  padding: 0.5em 1.1em;
+  font-weight: 700;
+  min-height: 48px;
+}
+.lx-choice {
+  background: var(--lx-card);
+  border: 3px solid var(--lx-line);
+  border-radius: 1rem;
+  min-height: 64px;
+  font-weight: 700;
+}
+.lx-choice[data-state="ok"] {
+  border-color: var(--lx-ok);
+  background: color-mix(in srgb, var(--lx-ok) 18%, var(--lx-card));
+}
+.lx-choice[data-state="no"] {
+  border-color: var(--lx-no);
+  background: color-mix(in srgb, var(--lx-no) 14%, var(--lx-card));
+}
+.lx-s1 {
+  color: var(--lx-s1);
+}
+.lx-s2 {
+  color: var(--lx-s2);
+}
+.lx-root :focus-visible {
+  outline: 3px solid var(--lx-accent);
+  outline-offset: 3px;
+}
+.lx-root ::selection {
+  background: var(--lx-accent);
+  color: var(--lx-on-accent);
+}

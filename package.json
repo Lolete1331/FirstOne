@@ -13,6 +13,9 @@
     "dict:load": "tsx scripts/load-dictionary.ts"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/lexend": "^5.3.0",
+    "@fontsource/opendyslexic": "^5.3.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "canvas-confetti": "^1.9.4",

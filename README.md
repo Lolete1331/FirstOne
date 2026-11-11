@@ -203,6 +203,18 @@ Necesitarás la *Site key* y la *Secret key*.
 
 ---
 
+## Leer y escribir mejor (dislexia)
+
+Sección en **`/lectura`**, separada del juego desde la portada. Está pensada para niños y niñas de 6 a 12 años
+con dislexia, sin cuentas ni datos personales.
+
+- **Ajustes de lectura:** fondo (crema por defecto y otros tonos suaves), tipo de letra (Lexend, Atkinson
+  Hyperlegible, OpenDyslexic, Verdana), tamaño, espaciado y velocidad de la voz. Se guardan en el dispositivo.
+- **Actividades:** contar sílabas, sonidos iniciales, b·d·p·q, ortografía (h, b/v, g/j, ll/y…), dictado con voz,
+  y listas de palabras por niveles (separadas en sílabas de colores).
+- **Guía para familias:** tipos de dislexia (fonológica, superficial, mixta) y qué actividad ayuda en cada caso.
+- No sustituye a un logopeda o psicopedagogo.
+
 ## Administración
 
 Panel en **`/admin`**, solo visible para cuentas con permiso de admin. Desde ahí puedes:
