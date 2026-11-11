@@ -66,7 +66,7 @@ export function CountdownBig() {
 
   return (
     <div className="card p-4 sm:p-5">
-      <div className="flex items-center justify-between gap-3 mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
         <p className="text-xs uppercase tracking-[0.2em] text-muted">
           La carrera {year ?? ""} termina en
         </p>

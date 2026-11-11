@@ -66,7 +66,7 @@ export function StatsView() {
       {loading && !s ? (
         <div className="mt-6"><Skeleton rows={4} /></div>
       ) : s ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 [&>*]:min-w-0">
           <div className="card p-6 flex flex-col items-center justify-center md:row-span-2">
             <p className="text-xs uppercase tracking-[0.2em] text-muted">Diccionario conquistado</p>
             <div className="relative mt-4 grid place-items-center">

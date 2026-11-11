@@ -40,6 +40,12 @@ html {
   background: var(--bg);
 }
 
+/* Ningún elemento debe poder provocar scroll horizontal en móvil */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--bg);
   color: var(--text);

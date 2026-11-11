@@ -8,6 +8,7 @@ import { getSupabase } from "@/lib/supabase/client";
 import { Empty, PageTitle, Skeleton, YearSelect } from "@/components/ui";
 import { MedalBadge } from "@/components/medal";
 import { UserLink } from "@/components/user-link";
+import { DefinitionButton } from "@/components/definition-button";
 import { countryFlag } from "@/lib/countries";
 import { currentGameYear, formatClaimDate, formatPreciseTime, formatSinceReset } from "@/lib/time/year";
 import { normalizeWord } from "@/lib/words/normalize";
@@ -59,7 +60,7 @@ export function HistoryView() {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            className="flex-1 bg-transparent px-3 py-3 outline-none font-display"
+            className="flex-1 min-w-0 w-full bg-transparent px-3 py-3 outline-none font-display"
           />
           {query && (
             <button type="button" onClick={() => (setQuery(""), close())} className="pr-4 text-muted hover:text-text">
@@ -87,7 +88,7 @@ export function HistoryView() {
                 No hay palabras reclamadas{debounced ? ` que empiecen por “${debounced}”` : ""} en {year}.
               </Empty>
             ) : (
-              <ul className="grid sm:grid-cols-2 gap-x-6">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 [&>*]:min-w-0">
                 {search.data.map((r) => (
                   <li key={r.word}>
                     <button onClick={() => open(r.word)} className="w-full flex items-center gap-3 px-2 py-2.5 border-b border-line/60 text-left group">
@@ -118,7 +119,10 @@ function WordDetail({ word, onBack }: { word: string; onBack: () => void }) {
       <button onClick={onBack} className="text-sm text-muted hover:text-text">
         ← Volver
       </button>
-      <h2 className="mt-2 font-display font-black text-5xl sm:text-7xl tracking-tight break-words">{word}</h2>
+      <div className="mt-2 flex flex-wrap items-end gap-x-4 gap-y-2">
+        <h2 className="font-display font-black text-5xl sm:text-7xl tracking-tight break-words">{word}</h2>
+        {exists.data !== false && <DefinitionButton word={word} className="mb-2" />}
+      </div>
       {exists.data === false && <p className="mt-2 text-danger">Esta palabra no está en el diccionario.</p>}
 
       {history.loading && !history.data ? (

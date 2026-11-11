@@ -30,7 +30,7 @@ export default function Home() {
         Si eres la primera persona del mundo en escribirla este año, es tuya 🥇. El 1 de enero todo vuelve a empezar.
       </p>
 
-      <section className="mt-8 grid gap-4 md:grid-cols-[1fr_1.2fr]">
+      <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-[1fr_1.2fr] [&>*]:min-w-0">
         <CountdownBig />
         <HomeFeed />
       </section>

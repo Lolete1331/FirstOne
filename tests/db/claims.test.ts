@@ -349,6 +349,20 @@ describe.skipIf(!hasDb)("base de datos", () => {
     });
   });
 
+  describe("definiciones", () => {
+    it("todos pueden leer la caché de definiciones pero nadie puede escribirla desde la app", async () => {
+      await pool.query(
+        "insert into public.word_definitions (word, lemma, groups, source) values ('año', 'año', '[]', 'none') on conflict (word) do nothing",
+      );
+      const rows = await asRole<{ word: string }>("anon", null, "select word from public.word_definitions where word = 'año'");
+      expect(rows).toHaveLength(1);
+      const u = await createUser();
+      await expect(
+        asRole("authenticated", u.id, "insert into public.word_definitions (word, lemma, source) values ('ano', 'ano', 'none')"),
+      ).rejects.toThrow(/permission denied|row-level security/);
+    });
+  });
+
   describe("feed en vivo", () => {
     it("cada reclamación se emite al canal live-feed con el @usuario", async () => {
       const u = await createUser("CO");

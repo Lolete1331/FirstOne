@@ -11,6 +11,7 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { MAX_WORD_LENGTH, normalizeWord } from "@/lib/words/normalize";
 import { formatClaimDate, formatPreciseTime } from "@/lib/time/year";
 import { UserLink } from "./user-link";
+import { DefinitionButton } from "./definition-button";
 import type { ClaimResponse } from "@/lib/claim-types";
 
 type Hint = { word: string; exists: boolean; total: number; owner: string | null };
@@ -156,12 +157,16 @@ export function ClaimBox() {
                 {!hint.exists ? (
                   <span className="text-danger/90">✗ no está en el diccionario</span>
                 ) : hint.total > 0 ? (
-                  <span className="text-muted">
+                  <span className="text-muted flex items-center gap-2">
                     👑 de <b className="text-text">{hint.owner ? `@${hint.owner}` : "cuenta eliminada"}</b> · {fmt(hint.total)}{" "}
                     {hint.total === 1 ? "persona" : "personas"}
+                    <DefinitionButton word={hint.word} variant="icon" />
                   </span>
                 ) : (
-                  <span className="text-lime font-bold tracking-wide">✦ ¡LIBRE! nadie la tiene este año</span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lime font-bold tracking-wide">✦ ¡LIBRE! nadie la tiene este año</span>
+                    <DefinitionButton word={hint.word} variant="icon" />
+                  </span>
                 )}
               </motion.p>
             )}
@@ -271,6 +276,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
             <b className="font-display text-2xl">{r.word}</b> es tuya durante todo {r.year}.
           </p>
           <p className="mt-2 text-sm text-muted font-mono">Reclamada a las {r.claimed_at && formatPreciseTime(r.claimed_at)}</p>
+          {r.word && <DefinitionButton word={r.word} className="mt-4" />}
         </>,
       );
     case "joined":
@@ -285,6 +291,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
             de {fmt(r.total ?? r.position ?? 0)} en escribir <b className="text-text">{r.word}</b> este año
           </p>
           <p className="mt-4 text-base">{ownerLine}</p>
+          {r.word && <DefinitionButton word={r.word} className="mt-4" />}
         </>,
       );
     case "already_yours":
@@ -309,6 +316,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
               </p>
             </>
           )}
+          {r.word && <DefinitionButton word={r.word} className="mt-4" />}
         </>,
       );
     case "invalid":
