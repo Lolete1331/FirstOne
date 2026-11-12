@@ -9,6 +9,7 @@ import { Empty, PageTitle, Skeleton, YearSelect } from "@/components/ui";
 import { MedalBadge } from "@/components/medal";
 import { UserLink } from "@/components/user-link";
 import { DefinitionButton } from "@/components/definition-button";
+import { useAuth } from "@/components/auth-provider";
 import { countryFlag } from "@/lib/countries";
 import { currentGameYear, formatClaimDate, formatPreciseTime, formatSinceReset } from "@/lib/time/year";
 import { normalizeWord } from "@/lib/words/normalize";
@@ -153,6 +154,8 @@ function WordDetail({ word, onBack }: { word: string; onBack: () => void }) {
 }
 
 function YearCard({ word, row }: { word: string; row: YearRow }) {
+  const { profile } = useAuth();
+  const isOwner = !!(profile && row.owner && profile.username.toLowerCase() === row.owner.toLowerCase());
   const [open, setOpen] = useState(false);
   const [claimants, setClaimants] = useState<Claimant[]>([]);
   const [loading, setLoading] = useState(false);
@@ -188,6 +191,14 @@ function YearCard({ word, row }: { word: string; row: YearRow }) {
         </div>
       </div>
       <p className="mt-3 text-xs text-muted">Conquistada {formatSinceReset(row.seconds_after_reset)} después del reinicio</p>
+      {isOwner && (
+        <Link
+          href={`/diploma/${encodeURIComponent(word)}/${row.year}`}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-gold/50 bg-gold/10 text-gold px-3.5 py-1.5 text-sm font-bold hover:bg-gold/20"
+        >
+          🖨️ Imprimir mi diploma
+        </Link>
+      )}
 
       {row.total > 1 && (
         <button

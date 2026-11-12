@@ -218,3 +218,156 @@ body {
   background: var(--lx-accent);
   color: var(--lx-on-accent);
 }
+
+/* ───────────── Diploma imprimible (estilo clásico) ───────────── */
+.diploma {
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 297 / 210;
+  background: radial-gradient(ellipse at 50% 40%, #fffaf0 0%, #f6ecd6 70%, #efe1c2 100%);
+  color: #2b2620;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.45);
+  font-family: "EB Garamond", Georgia, serif;
+}
+.diploma {
+  position: relative;
+}
+.diploma-frame {
+  position: absolute;
+  inset: 3cqw;
+  border: 0.35cqw solid #b8892b;
+  outline: 0.12cqw solid #b8892b;
+  outline-offset: -1.1cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.2cqw 6cqw 1.6cqw;
+}
+.diploma-corner {
+  position: absolute;
+  color: #b8892b;
+  font-size: 2.2cqw;
+  line-height: 1;
+}
+.diploma-corner.tl { top: 0.4cqw; left: 0.8cqw; }
+.diploma-corner.tr { top: 0.4cqw; right: 0.8cqw; }
+.diploma-corner.bl { bottom: 0.4cqw; left: 0.8cqw; }
+.diploma-corner.br { bottom: 0.4cqw; right: 0.8cqw; }
+.diploma-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: 2cqw;
+  letter-spacing: 0.08em;
+}
+.diploma-brand img { width: 2.6cqw; height: 2.6cqw; }
+.diploma-title {
+  margin-top: 1.2cqw;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: 5.4cqw;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #8a6418;
+}
+.diploma-sub {
+  margin-top: 0.5cqw;
+  font-style: italic;
+  font-size: 1.55cqw;
+  color: #6b5a40;
+}
+.diploma-text {
+  margin-top: 1.4cqw;
+  font-size: 1.75cqw;
+}
+.diploma-name {
+  margin-top: 0.4cqw;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: 4.2cqw;
+  line-height: 1.1;
+  border-bottom: 0.12cqw solid #b8892b;
+  padding: 0 3cqw 0.3cqw;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.diploma-handle {
+  margin-top: 0.4cqw;
+  font-size: 1.4cqw;
+  color: #6b5a40;
+}
+.diploma-word {
+  margin-top: 0.3cqw;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 7cqw;
+  line-height: 1.05;
+  color: #2b2620;
+  overflow-wrap: anywhere;
+}
+.diploma-def {
+  margin-top: 0.4cqw;
+  max-width: 62cqw;
+  font-style: italic;
+  font-size: 1.35cqw;
+  color: #6b5a40;
+}
+.diploma-date { font-size: 1.55cqw; }
+.diploma-footer {
+  margin-top: auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
+  font-size: 1.25cqw;
+  color: #6b5a40;
+}
+.diploma-medal { justify-self: start; width: 7cqw; }
+.diploma-medal svg { width: 100%; height: auto; }
+.diploma-meta { line-height: 1.5; }
+.diploma-sign { justify-self: end; text-align: center; }
+.diploma-sign-name {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2.6cqw;
+  color: #2b2620;
+  line-height: 1;
+}
+.diploma-sign-line {
+  margin-top: 0.4cqw;
+  border-top: 0.12cqw solid #b8892b;
+  padding-top: 0.4cqw;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  html,
+  body,
+  .diploma-page {
+    background: #fff !important;
+  }
+  .fo-backdrop,
+  .diploma-controls {
+    display: none !important;
+  }
+  .diploma-page > div {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .diploma {
+    width: 297mm;
+    height: 210mm;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

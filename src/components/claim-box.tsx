@@ -12,6 +12,19 @@ import { MAX_WORD_LENGTH, normalizeWord } from "@/lib/words/normalize";
 import { formatClaimDate, formatPreciseTime } from "@/lib/time/year";
 import { UserLink } from "./user-link";
 import { DefinitionButton } from "./definition-button";
+import Link from "next/link";
+
+function DiplomaLink({ word, year }: { word: string; year?: number }) {
+  if (!year) return null;
+  return (
+    <Link
+      href={`/diploma/${encodeURIComponent(word)}/${year}`}
+      className="inline-flex items-center gap-1.5 rounded-full border border-gold/50 bg-gold/10 text-gold px-3.5 py-1.5 text-sm font-bold hover:bg-gold/20 transition-colors"
+    >
+      🖨️ <span>Diploma</span>
+    </Link>
+  );
+}
 import type { ClaimResponse } from "@/lib/claim-types";
 
 type Hint = { word: string; exists: boolean; total: number; owner: string | null };
@@ -276,7 +289,12 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
             <b className="font-display text-2xl">{r.word}</b> es tuya durante todo {r.year}.
           </p>
           <p className="mt-2 text-sm text-muted font-mono">Reclamada a las {r.claimed_at && formatPreciseTime(r.claimed_at)}</p>
-          {r.word && <DefinitionButton word={r.word} className="mt-4" />}
+          {r.word && (
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <DefinitionButton word={r.word} />
+              <DiplomaLink word={r.word} year={r.year} />
+            </div>
+          )}
         </>,
       );
     case "joined":
@@ -307,6 +325,11 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
               <p className="mt-2 text-muted">
                 Reclamaste <b className="text-text">{r.word}</b> el {r.claimed_at && formatClaimDate(r.claimed_at)}
               </p>
+              {r.word && (
+                <div className="mt-3 flex justify-center">
+                  <DiplomaLink word={r.word} year={r.year} />
+                </div>
+              )}
             </>
           ) : (
             <>

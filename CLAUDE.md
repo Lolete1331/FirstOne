@@ -53,6 +53,9 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   localStorage, voz con speechSynthesis, estrellas solo en el dispositivo. **Sin cuentas ni datos de menores.**
   Las listas de palabras se separan en sílabas a mano y un test comprueba que existen en el diccionario.
 
+- `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
+  el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
+
 ## Reglas del producto (no romperlas)
 
 - Nunca vender ventaja: pagar no puede dar prioridad ni palabras.
