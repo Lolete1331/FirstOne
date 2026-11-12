@@ -251,6 +251,8 @@ function ResultOverlay({ r, onClose }: { r: ClaimResponse; onClose: () => void }
 }
 
 function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
+  const { profile } = useAuth();
+  const me = profile ? `@${profile.username}` : null;
   const enter = { initial: { opacity: 0, y: 30, scale: 0.95 }, animate: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 0, y: -20, scale: 0.97 } };
 
   const shell = (accent: string, children: React.ReactNode) => (
@@ -286,7 +288,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
             ¡Eres el primero!
           </motion.p>
           <p className="mt-3 text-lg">
-            <b className="font-display text-2xl">{r.word}</b> es tuya durante todo {r.year}.
+            <b className="font-display text-2xl">{r.word}</b> es {me ? <b className="text-gold">de {me}</b> : "tuya"} durante todo {r.year}.
           </p>
           <p className="mt-2 text-sm text-muted font-mono">Reclamada a las {r.claimed_at && formatPreciseTime(r.claimed_at)}</p>
           {r.word && (
@@ -322,6 +324,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
                 <Medal size={56} animate={false} />
               </div>
               <p className="font-display font-black text-2xl">Ya es tuya 🥇</p>
+              {me && <p className="mt-1 text-gold font-bold">«{r.word}» es de {me}</p>}
               <p className="mt-2 text-muted">
                 Reclamaste <b className="text-text">{r.word}</b> el {r.claimed_at && formatClaimDate(r.claimed_at)}
               </p>
