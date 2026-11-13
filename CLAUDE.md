@@ -67,8 +67,47 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   presión, sin recoger datos de niños.
 - Antes de algo que borre datos de jugadores o sea difícil de deshacer, preguntar al dueño.
 
-## Ideas pendientes
+## Estado actual (13-nov-2026)
 
-Tarjeta para compartir "soy el dueño de…", palabra del día, rachas, páginas públicas por palabra
-para SEO, servidor de correo propio (Resend) para que el login por email funcione para todos,
-Turnstile, páginas legales (privacidad, aviso legal, cookies).
+En producción y probado: juego con medalla y posiciones (#619…), feed en vivo, ranking por jugador
+y país, historial con todos los que llegaron después, estadísticas («Estadísticas», antes «Stats»),
+perfiles por años, panel `/admin` (el dueño es el único admin), login con Google, botón
+«📖 Significado» (Wikcionario + enlace a la RAE), **diploma imprimible**, la pantalla de la medalla
+dice ««palabra» es de @usuario» (para compartir capturas), portada con dos opciones, sección de
+dislexia `/lectura`, SEO (sitemap, robots, Open Graph, `/que-es` con FAQ, `llms.txt`), app
+instalable (manifest), logo y kit de marca en `brand/`.
+
+Marketing: TikTok **@firstone.es**. Vídeos hechos con `tools/video/` (anuncio de 22 s y tutorial
+completo de ~2 min con subtítulos quemados). Una lingüista de prestigio apoya el proyecto y lo va a
+difundir; sus sugerencias (diploma, quitar el anglicismo «Stats», mostrar el @usuario) ya están
+hechas. Pidió además un aire **«más de diccionario»** (menos festivo) y propuso llamar «Así estamos»
+a las estadísticas (pendiente de decidir).
+
+## Prioridades (en este orden)
+
+1. **Login por email para todos**: conectar SMTP propio (Resend, gratis 3.000/mes) en Supabase y,
+   con él, la plantilla de correo con código (`supabase/templates/magic_link.html`; el proyecto
+   usa códigos de 8 dígitos → se dejó en 6 con la Management API; la UI acepta 6-8). Ahora solo
+   funciona Google para el público. Necesita que el dueño cree la cuenta de Resend.
+2. **Turnstile** (anti-bots): crear clave en Cloudflare y poner `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y
+   `TURNSTILE_SECRET_KEY` en Vercel (el código ya está preparado en `src/lib/human.ts`).
+3. **Páginas legales** (privacidad, aviso legal, cookies) — obligatorias en España al guardar emails.
+4. Vigilar límites del plan gratuito de Supabase (≈200 conexiones realtime simultáneas).
+5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
+   El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
+6. **Imagen para compartir** ««palabra» es de @usuario 🥇» (WhatsApp/Instagram/X).
+7. Palabra del día · 8. Página pública por palabra (`/palabra/…`) para SEO · rachas.
+
+## Trucos aprendidos (sandbox)
+
+- El contenedor se reinicia a menudo: hay que volver a arrancar `dockerd`, el contenedor
+  `supabase_kong_firstone` (sirve las plantillas de correo con un bucle `nc`), `tools/dev/kong-sustituto.cjs`
+  y `npm run dev` (con `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt`).
+- Copia local: `npx supabase start -x kong,studio,storage-api,imgproxy,edge-runtime,logflare,vector,supavisor,postgres-meta`
+  (con el sustituto de Kong ya escuchando en :54321), `.env.local` con `NEXT_PUBLIC_SUPABASE_URL=` vacío y
+  `SUPABASE_URL=http://127.0.0.1:54321`; la app completa se ve en `http://localhost:8080`.
+- Next 16 conserva copias **ocultas** de páginas visitadas: en Playwright usa `getByRole` o
+  `visible=true`, no `getByText` a secas. Al volver de otra página, el estado (p. ej. la medalla abierta) se conserva.
+- Playwright: escribe letras como «ñ» con `pressSequentially`, no con `press`.
+- Wikcionario limita (429) desde la IP del sandbox: por eso las definiciones se cachean en `word_definitions`.
+- Los tokens de Supabase y Vercel caducan hacia el **10-dic-2026**.
