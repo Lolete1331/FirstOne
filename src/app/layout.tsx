@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Space_Grotesk, Unbounded } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/components/auth-provider";
 
 const unbounded = Unbounded({ variable: "--font-unbounded", subsets: ["latin", "latin-ext"], weight: ["400", "700", "900"] });
@@ -49,6 +50,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="es" className={`${unbounded.variable} ${grotesk.variable} ${jetbrains.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <AuthProvider>{children}</AuthProvider>
+        {/* Contador de visitas anónimo y sin cookies (Vercel Web Analytics). */}
+        <Analytics />
       </body>
     </html>
   );

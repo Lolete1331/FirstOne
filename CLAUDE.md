@@ -19,6 +19,8 @@ Lee también `AGENTS.md` (Next.js 16 tiene cambios importantes) y `README.md` (a
 Variables de entorno en Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
 `SUPABASE_SECRET_KEY`, `HUMAN_COOKIE_SECRET`, `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
 Turnstile (anti-bots) aún **no** está configurado.
+Páginas legales (`/privacidad`, `/aviso-legal`, `/cookies`): el responsable y el email de contacto se leen de
+`LEGAL_OWNER_NAME` y `LEGAL_CONTACT_EMAIL` en Vercel (no van en el repositorio). Contador de visitas: Vercel Web Analytics (sin cookies).
 
 ## Acceso desde las sesiones de Claude
 
@@ -91,7 +93,7 @@ a las estadísticas (pendiente de decidir).
    funciona Google para el público. Necesita que el dueño cree la cuenta de Resend.
 2. **Turnstile** (anti-bots): crear clave en Cloudflare y poner `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y
    `TURNSTILE_SECRET_KEY` en Vercel (el código ya está preparado en `src/lib/human.ts`).
-3. **Páginas legales** (privacidad, aviso legal, cookies) — obligatorias en España al guardar emails.
+3. ~~Páginas legales~~ hechas (14-nov-2026); falta poner `LEGAL_CONTACT_EMAIL` en Vercel.
 4. Vigilar límites del plan gratuito de Supabase (≈200 conexiones realtime simultáneas).
 5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
    El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.

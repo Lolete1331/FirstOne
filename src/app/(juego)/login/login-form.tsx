@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import { getSupabase } from "@/lib/supabase/client";
@@ -114,6 +115,10 @@ export function LoginForm() {
         </button>
       </form>
       {state === "error" && <p className="text-danger text-sm">No hemos podido iniciar sesión. Inténtalo de nuevo.</p>}
+      <p className="text-xs text-muted text-center leading-relaxed">
+        Al entrar aceptas las <Link href="/aviso-legal" className="underline">normas de uso</Link> y confirmas que tienes 14
+        años o más. Así tratamos tus datos: <Link href="/privacidad" className="underline">política de privacidad</Link>.
+      </p>
     </div>
   );
 }

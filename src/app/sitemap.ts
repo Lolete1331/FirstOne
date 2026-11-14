@@ -19,6 +19,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/rankings", "hourly", 0.7],
     ["/history", "daily", 0.6],
     ["/stats", "hourly", 0.6],
+    ["/privacidad", "yearly", 0.2],
+    ["/aviso-legal", "yearly", 0.2],
+    ["/cookies", "yearly", 0.2],
   ];
   return pages.map(([path, changeFrequency, priority]) => ({ url: `${BASE}${path}`, changeFrequency, priority }));
 }

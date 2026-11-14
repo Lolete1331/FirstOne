@@ -4,6 +4,7 @@ import { useState, type CSSProperties, type ReactNode } from "react";
 import { AnimatePresence } from "motion/react";
 import { BACKGROUNDS, FONTS, SIZES, SPACINGS, useLecturaSettings } from "@/lib/lectura/settings";
 import { SettingsPanel } from "./settings-panel";
+import { LegalLinks } from "@/components/legal/legal-links";
 
 /** Aplica los ajustes de lectura (fondo, letra, tamaño, espaciado) a toda la sección. */
 export function LecturaShell({ children }: { children: ReactNode }) {
@@ -50,6 +51,7 @@ export function LecturaShell({ children }: { children: ReactNode }) {
         Estas actividades son para practicar y apoyar la lectura. No sustituyen a un logopeda ni a un psicopedagogo: solo
         un profesional puede valorar si hay dislexia y qué ayuda necesita cada niño o niña. No guardamos datos personales:
         las estrellas y los ajustes se quedan en este dispositivo.
+        <LegalLinks className="mt-3 !justify-start" />
       </footer>
       <AnimatePresence>{open && <SettingsPanel onClose={() => setOpen(false)} />}</AnimatePresence>
     </div>

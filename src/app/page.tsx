@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LegalLinks } from "@/components/legal/legal-links";
 
 export const metadata: Metadata = {
   title: { absolute: "FirstOne — juega con las palabras del español" },
@@ -60,6 +61,7 @@ export default function Portada() {
           <a href="https://www.tiktok.com/@firstone.es" target="_blank" rel="noopener noreferrer" className="hover:text-lime">
             TikTok @firstone.es
           </a>
+          <LegalLinks className="w-full text-xs" />
         </footer>
       </main>
     </>
