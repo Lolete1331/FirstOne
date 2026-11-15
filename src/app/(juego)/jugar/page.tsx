@@ -4,6 +4,7 @@ import { ClaimBox } from "@/components/claim-box";
 import { CountdownBig } from "@/components/countdown";
 import { HomeFeed } from "@/components/home-feed";
 import { SetupNotice } from "@/components/setup-notice";
+import "@fontsource/cormorant-garamond/latin-700.css";
 
 export const metadata: Metadata = {
   title: "Jugar: sé el primero en escribir cada palabra",
@@ -35,6 +36,18 @@ export default function Home() {
       <p className="sm:hidden mt-6 text-center text-sm text-muted">
         Si eres la primera persona del mundo en escribirla este año, es tuya 🥇. El 1 de enero todo vuelve a empezar.
       </p>
+
+      <Link
+        href="/palabra-oculta"
+        className="mt-6 flex items-center gap-4 rounded-2xl border border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] px-5 py-4 hover:-translate-y-0.5 transition-transform"
+      >
+        <span className="text-3xl">🔎</span>
+        <span className="flex-1 min-w-0">
+          <span className="block font-[family-name:'Cormorant_Garamond'] font-bold text-xl leading-tight">La palabra oculta de hoy</span>
+          <span className="block text-sm text-[#6b6256]">Una palabra escondida y seis intentos para encontrarla.</span>
+        </span>
+        <span className="font-bold whitespace-nowrap">Jugar →</span>
+      </Link>
 
       <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-[1fr_1.2fr] [&>*]:min-w-0">
         <CountdownBig />

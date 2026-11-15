@@ -58,7 +58,7 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   Las listas de palabras se separan en sílabas a mano y un test comprueba que existen en el diccionario.
 
 - `/palabra-oculta` «La palabra oculta» (adivinar la palabra del día, 4-8 letras, 6 intentos, pista = definición
-  que gasta un intento). **En pruebas: sin enlaces y con noindex.** La palabra la calcula el servidor
+  que gasta un intento). Enlazada desde la portada y `/jugar` (15-nov-2026). La palabra la calcula el servidor
   (`src/lib/oculta/secret.ts`, orden secreto con `HUMAN_COOKIE_SECRET`; lista en `src/lib/oculta/words.ts`), nunca
   se envía antes de acabar. Con cuenta, intentos en `hidden_word_plays` y aciertos en `hidden_word_solves`
   (clasificación «los primeros en encontrarla»); sin cuenta, progreso en localStorage. No usar el nombre «Wordle».

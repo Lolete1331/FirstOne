@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import "@fontsource/cormorant-garamond/latin-700.css";
 import { LegalLinks } from "@/components/legal/legal-links";
 import { LEGAL } from "@/lib/legal";
 
@@ -53,6 +54,22 @@ export default function Portada() {
             </p>
             <span className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#2f6f6a] text-white font-bold px-6 py-3 group-hover:gap-3 transition-all">
               Empezar →
+            </span>
+          </Link>
+
+          <Link
+            href="/palabra-oculta"
+            className="group md:col-span-2 rounded-3xl p-7 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 border-2 border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] hover:-translate-y-1 transition-all"
+          >
+            <span className="text-5xl">🔎</span>
+            <div className="flex-1">
+              <h2 className="font-[family-name:'Cormorant_Garamond'] font-bold text-3xl sm:text-4xl leading-tight">La palabra oculta</h2>
+              <p className="mt-1 text-[#4a4a4a] leading-relaxed">
+                Cada día, una palabra del español escondida. Tienes seis intentos para encontrarla. ¿Serás de los primeros?
+              </p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#2b2622] text-[#f7f0e1] font-bold px-6 py-3 group-hover:gap-3 transition-all">
+              Adivinar →
             </span>
           </Link>
         </div>
