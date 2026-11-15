@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
   title: "Qué es FirstOne y cómo se juega",
@@ -45,6 +46,14 @@ const FAQ: { q: string; a: string }[] = [
     q: "¿Quién ha creado FirstOne?",
     a: "FirstOne lo han creado Diego y Álex, dos estudiantes de 18 años de Navarra (España). Puedes seguir el proyecto en TikTok como @firstone.es.",
   },
+  ...(LEGAL.contactEmail
+    ? [
+        {
+          q: "¿Puedo enviar sugerencias o avisar de un error?",
+          a: `¡Claro! Escríbenos a ${LEGAL.contactEmail}. Leemos todos los mensajes: ideas, palabras que faltan, errores o cualquier duda.`,
+        },
+      ]
+    : []),
 ];
 
 const jsonLd = {

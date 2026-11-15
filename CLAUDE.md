@@ -93,7 +93,7 @@ a las estadísticas (pendiente de decidir).
    funciona Google para el público. Necesita que el dueño cree la cuenta de Resend.
 2. **Turnstile** (anti-bots): crear clave en Cloudflare y poner `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y
    `TURNSTILE_SECRET_KEY` en Vercel (el código ya está preparado en `src/lib/human.ts`).
-3. ~~Páginas legales~~ hechas (14-nov-2026); falta poner `LEGAL_CONTACT_EMAIL` en Vercel.
+3. ~~Páginas legales~~ hechas (14-nov-2026); contacto público del proyecto en `LEGAL_CONTACT_EMAIL` (Vercel), también para sugerencias (pie y FAQ).
 4. Vigilar límites del plan gratuito de Supabase (≈200 conexiones realtime simultáneas).
 5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
    El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
