@@ -16,6 +16,8 @@ export type RankingRow = { pos: number; username: string; country: string | null
 export type OcultaState = {
   day: string;
   number: number;
+  /** false = palabra de un día anterior */
+  today: boolean;
   length: number;
   maxAttempts: number;
   /** null = sin cuenta: el progreso se guarda solo en el navegador. */
@@ -28,3 +30,11 @@ export type GuessResponse =
   | { status: "ok"; marks: Mark[]; solved: boolean; finished: boolean; reveal: Reveal | null; position: number | null }
   | { status: "hint"; hint: string; finished: false }
   | { status: "not_in_dictionary" | "wrong_length" | "repeated" | "finished" | "new_day" | "no_hint" | "retry" | "invalid" };
+
+export type DayStatus = { solved: boolean; attempts: number; finished: boolean };
+
+export type ArchiveState = {
+  days: { day: string; number: number; solvers: number }[];
+  /** null = sin cuenta (el estado se lee del navegador). */
+  mine: Record<string, DayStatus> | null;
+};

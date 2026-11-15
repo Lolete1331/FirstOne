@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
 import { countryFlag } from "@/lib/countries";
 import { foldWord, MAX_ATTEMPTS, msToNextDay, shareText, type Mark } from "@/lib/oculta/game";
-import type { GuessResponse, OcultaState, Reveal, Row } from "@/lib/oculta/types";
+import type { GuessResponse, OcultaState, Row } from "@/lib/oculta/types";
+import { emptyLocal, readLocal, writeLocal, type Local } from "@/lib/oculta/local";
 
 /* Paleta «de diccionario»: papel, tinta, dorado y azul tinta. */
 const MARK_STYLE: Record<Mark, string> = {
@@ -14,26 +15,7 @@ const MARK_STYLE: Record<Mark, string> = {
 };
 const KEY_ROWS = ["qwertyuiop", "asdfghjklñ", "zxcvbnm"];
 
-type Local = { rows: Row[]; hint: string | null; solved: boolean; finished: boolean; reveal: Reveal | null };
-const emptyLocal: Local = { rows: [], hint: null, solved: false, finished: false, reveal: null };
-const storageKey = (day: string) => `palabra-oculta:${day}`;
-function readLocal(day: string): Local {
-  try {
-    const raw = localStorage.getItem(storageKey(day));
-    return raw ? { ...emptyLocal, ...(JSON.parse(raw) as Local) } : emptyLocal;
-  } catch {
-    return emptyLocal;
-  }
-}
-function writeLocal(day: string, s: Local) {
-  try {
-    localStorage.setItem(storageKey(day), JSON.stringify(s));
-  } catch {
-    /* sin almacenamiento: la partida dura lo que la pestaña */
-  }
-}
-
-export function OcultaView() {
+export function OcultaView({ day: askedDay }: { day?: string }) {
   const { user, loading: authLoading } = useAuth();
   const [info, setInfo] = useState<OcultaState | null>(null);
   const [game, setGame] = useState<Local>(emptyLocal);
@@ -46,7 +28,7 @@ export function OcultaView() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/oculta", { cache: "no-store" });
+      const res = await fetch(askedDay ? `/api/oculta?day=${encodeURIComponent(askedDay)}` : "/api/oculta", { cache: "no-store" });
       if (!res.ok) throw new Error();
       const data = (await res.json()) as OcultaState;
       setInfo(data);
@@ -60,7 +42,7 @@ export function OcultaView() {
     } catch {
       setError(true);
     }
-  }, []);
+  }, [askedDay]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -202,13 +184,20 @@ export function OcultaView() {
       <div className="rounded-3xl border border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] shadow-2xl px-4 sm:px-8 py-6">
         <header className="text-center">
           <p className="text-[11px] uppercase tracking-[0.3em] text-[#8a7a5c]">
-            {info ? `N.º ${info.number} · ${formatDay(info.day)}` : " "}
+            {info ? `N.º ${info.number} · ${formatDay(info.day)}${info.today ? "" : " · palabra anterior"}` : " "}
           </p>
           <h1 className="mt-1 font-[family-name:'Cormorant_Garamond'] font-bold text-4xl sm:text-5xl">La palabra oculta</h1>
           <p className="mt-1 font-[family-name:'EB_Garamond'] italic text-[#6b6256]">
             {info ? `Una palabra de ${length} letras · ${MAX_ATTEMPTS} intentos` : "Cargando…"}
           </p>
-          {!game.finished && <NextWord className="mt-1 text-xs text-[#8a7a5c]" />}
+          {info && !info.today ? (
+            <p className="mt-1 text-xs text-[#8a7a5c]">
+              Puedes jugarla, pero la clasificación solo cuenta a quien la encontró ese día.{" "}
+              <Link href="/palabra-oculta" className="underline">Ir a la de hoy</Link>
+            </p>
+          ) : (
+            !game.finished && <NextWord className="mt-1 text-xs text-[#8a7a5c]" />
+          )}
         </header>
 
         {/* Tablero */}
@@ -309,6 +298,12 @@ export function OcultaView() {
       </div>
 
       {info && <Ranking info={info} />}
+
+      <div className="mt-4 text-center">
+        <Link href="/palabra-oculta/anteriores" className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-bold hover:border-lime/60">
+          📚 Palabras anteriores
+        </Link>
+      </div>
     </div>
   );
 }
@@ -381,7 +376,7 @@ function Result({ info, game, tries, position, guest }: { info: OcultaState; gam
           {position === 1 ? "🥇 ¡Has sido la primera persona del mundo en encontrarla hoy!" : `Eres la persona n.º ${position} en encontrarla hoy.`}
         </p>
       )}
-      {guest && game.solved && (
+      {guest && game.solved && info.today && (
         <p className="mt-3 text-sm text-[#6b6256]">
           <Link href="/login?next=/palabra-oculta" className="underline">Entra con tu cuenta</Link> y mañana podrás salir en la clasificación.
         </p>
@@ -394,7 +389,12 @@ function Result({ info, game, tries, position, guest }: { info: OcultaState; gam
           Ir a conquistar palabras
         </Link>
       </div>
-      <NextWord />
+      {info.today ? <NextWord /> : (
+        <p className="mt-4 text-sm text-[#6b6256]">
+          <Link href="/palabra-oculta/anteriores" className="underline">Jugar otra palabra anterior</Link> ·{" "}
+          <Link href="/palabra-oculta" className="underline">Ir a la de hoy</Link>
+        </p>
+      )}
     </div>
   );
 }
@@ -435,9 +435,11 @@ function NextWord({ className = "mt-4 text-sm text-[#6b6256]" }: { className?: s
 function Ranking({ info }: { info: OcultaState }) {
   return (
     <section className="card mt-6 p-5">
-      <h2 className="font-display font-bold text-lg">Los primeros en encontrarla hoy</h2>
+      <h2 className="font-display font-bold text-lg">Los primeros en encontrarla {info.today ? "hoy" : `el ${formatDay(info.day)}`}</h2>
       {info.ranking.length === 0 ? (
-        <p className="mt-2 text-sm text-muted">Nadie la ha encontrado todavía. ¿Serás la primera persona?</p>
+        <p className="mt-2 text-sm text-muted">
+          {info.today ? "Nadie la ha encontrado todavía. ¿Serás la primera persona?" : "Nadie la encontró ese día."}
+        </p>
       ) : (
         <>
           <ol className="mt-3 space-y-1.5">
@@ -455,7 +457,7 @@ function Ranking({ info }: { info: OcultaState }) {
             ))}
           </ol>
           <p className="mt-3 text-xs text-muted">
-            {info.solvers === 1 ? "1 persona la ha encontrado" : `${info.solvers.toLocaleString("es")} personas la han encontrado`} hoy.
+            {info.solvers === 1 ? "1 persona la ha encontrado" : `${info.solvers.toLocaleString("es")} personas la han encontrado`} {info.today ? "hoy" : "ese día"}.
           </p>
         </>
       )}

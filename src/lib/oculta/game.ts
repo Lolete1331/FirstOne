@@ -61,6 +61,20 @@ export function dayNumber(day: string): number {
   return Math.round((Date.parse(`${day}T00:00:00Z`) - Date.parse(`${LAUNCH_DAY}T00:00:00Z`)) / 86_400_000) + 1;
 }
 
+/** ¿Se puede jugar ese día? (desde el lanzamiento hasta hoy, nunca días futuros) */
+export function isPlayableDay(day: string, today: string = dayKey()): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) && !Number.isNaN(Date.parse(`${day}T00:00:00Z`)) && day >= LAUNCH_DAY && day <= today;
+}
+
+/** Días anteriores a hoy, del más reciente al más antiguo. */
+export function pastDays(today: string = dayKey()): string[] {
+  const out: string[] = [];
+  for (let t = Date.parse(`${today}T00:00:00Z`) - 86_400_000; t >= Date.parse(`${LAUNCH_DAY}T00:00:00Z`); t -= 86_400_000) {
+    out.push(new Date(t).toISOString().slice(0, 10));
+  }
+  return out;
+}
+
 /** Milisegundos hasta la siguiente palabra. */
 export function msToNextDay(now: Date = new Date()): number {
   const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);

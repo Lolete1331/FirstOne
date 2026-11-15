@@ -56,3 +56,17 @@ describe("La palabra oculta · reglas", () => {
     expect(t).toContain("4/6");
   });
 });
+
+describe("La palabra oculta · días anteriores", () => {
+  it("solo se pueden jugar días desde el lanzamiento hasta hoy", async () => {
+    const { isPlayableDay, pastDays } = await import("@/lib/oculta/game");
+    expect(isPlayableDay("2026-11-15", "2026-11-17")).toBe(true);
+    expect(isPlayableDay("2026-11-17", "2026-11-17")).toBe(true);
+    expect(isPlayableDay("2026-11-18", "2026-11-17")).toBe(false); // futuro
+    expect(isPlayableDay("2026-11-14", "2026-11-17")).toBe(false); // antes del lanzamiento
+    expect(isPlayableDay("2026-13-01", "2027-11-17")).toBe(false);
+    expect(isPlayableDay("hola", "2026-11-17")).toBe(false);
+    expect(pastDays("2026-11-17")).toEqual(["2026-11-16", "2026-11-15"]);
+    expect(pastDays("2026-11-15")).toEqual([]);
+  });
+});

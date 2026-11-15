@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "@fontsource/cormorant-garamond/latin-600.css";
 import "@fontsource/cormorant-garamond/latin-700.css";
 import "@fontsource/eb-garamond/latin-400.css";
 import "@fontsource/eb-garamond/latin-400-italic.css";
-import { OcultaView } from "./oculta-view";
+import { OcultaFromUrl } from "./oculta-from-url";
 
 export const metadata: Metadata = {
   title: "La palabra oculta",
@@ -12,5 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function PalabraOcultaPage() {
-  return <OcultaView />;
+  return (
+    <Suspense fallback={<p className="pt-24 text-center text-muted">Cargando…</p>}>
+      <OcultaFromUrl />
+    </Suspense>
+  );
 }

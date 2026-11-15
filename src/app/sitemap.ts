@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/jugar", "daily", 1],
     ["/que-es", "monthly", 0.9],
     ["/palabra-oculta", "daily", 0.9],
+    ["/palabra-oculta/anteriores", "daily", 0.5],
     ["/lectura", "weekly", 0.9],
     ["/lectura/tipos", "monthly", 0.8],
     ["/lectura/listas", "monthly", 0.7],

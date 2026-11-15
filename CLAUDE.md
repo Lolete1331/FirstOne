@@ -61,7 +61,9 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   que gasta un intento). Enlazada desde la portada y `/jugar` (15-nov-2026). La palabra la calcula el servidor
   (`src/lib/oculta/secret.ts`, orden secreto con `HUMAN_COOKIE_SECRET`; lista en `src/lib/oculta/words.ts`), nunca
   se envía antes de acabar. Con cuenta, intentos en `hidden_word_plays` y aciertos en `hidden_word_solves`
-  (clasificación «los primeros en encontrarla»); sin cuenta, progreso en localStorage. No usar el nombre «Wordle».
+  (clasificación «los primeros en encontrarla»); sin cuenta, progreso en localStorage.
+  Palabras anteriores en `/palabra-oculta/anteriores` (se juegan con `?dia=AAAA-MM-DD`); la clasificación de cada
+  día solo cuenta los aciertos de ese mismo día UTC (`hidden_word_on_time`). No usar el nombre «Wordle».
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 

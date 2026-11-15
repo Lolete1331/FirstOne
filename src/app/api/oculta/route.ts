@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getServerSupabase } from "@/lib/supabase/server";
+import { currentPlayer } from "@/lib/oculta/player";
 import { getAdminSupabase } from "@/lib/supabase/admin";
-import { dayKey, dayNumber, foldWord, isFoldedWord, MAX_ATTEMPTS, scoreGuess } from "@/lib/oculta/game";
+import { dayKey, dayNumber, foldWord, isFoldedWord, isPlayableDay, MAX_ATTEMPTS, scoreGuess } from "@/lib/oculta/game";
 import { secretWordFor } from "@/lib/oculta/secret";
 import { lookupDefinition } from "@/lib/words/lookup";
 import { raeUrl, wiktionaryUrl } from "@/lib/words/definitions";
@@ -24,18 +24,6 @@ const Body = z.object({
   guess: z.string().max(40).optional(),
   used: z.number().int().min(0).max(MAX_ATTEMPTS).optional(),
 });
-
-type Player = { id: string } | null;
-
-/** Jugador con cuenta y perfil (y no bloqueado); si no, se juega como invitado. */
-async function currentPlayer(): Promise<Player> {
-  const supabase = await getServerSupabase();
-  const { data } = await supabase.auth.getClaims();
-  const id = data?.claims?.sub;
-  if (!id) return null;
-  const { data: profile } = await getAdminSupabase().from("profiles").select("id, banned_at").eq("id", id).maybeSingle();
-  return profile && !profile.banned_at ? { id } : null;
-}
 
 /** Quita la palabra (y sus derivados evidentes) del texto de la pista. */
 function maskWord(text: string, secret: string): string {
@@ -69,6 +57,8 @@ async function positionOf(day: string, userId: string): Promise<number | null> {
   const db = getAdminSupabase();
   const { data: mine } = await db.from("hidden_word_solves").select("solved_at").eq("day", day).eq("user_id", userId).maybeSingle();
   if (!mine) return null;
+  // Fuera de plazo (palabra de un día anterior): no entra en la clasificación.
+  if (Date.parse(mine.solved_at) >= Date.parse(`${day}T00:00:00Z`) + 86_400_000) return null;
   const { count } = await db
     .from("hidden_word_solves")
     .select("user_id", { count: "exact", head: true })
@@ -87,8 +77,10 @@ async function loadPlays(day: string, userId: string) {
   return (data ?? []) as { n: number; guess: string | null }[];
 }
 
-export async function GET() {
-  const day = dayKey();
+export async function GET(request: Request) {
+  const asked = new URL(request.url).searchParams.get("day");
+  const day = asked ?? dayKey();
+  if (!isPlayableDay(day)) return reply({ status: "invalid" }, 400);
   const secret = foldWord(secretWordFor(day));
   const [player, rank] = await Promise.all([currentPlayer(), loadRanking(day)]);
 
@@ -109,7 +101,7 @@ export async function GET() {
     };
   }
 
-  return reply({ day, number: dayNumber(day), length: [...secret].length, maxAttempts: MAX_ATTEMPTS, me, ...rank });
+  return reply({ day, number: dayNumber(day), today: day === dayKey(), length: [...secret].length, maxAttempts: MAX_ATTEMPTS, me, ...rank });
 }
 
 export async function POST(request: Request) {
@@ -117,8 +109,9 @@ export async function POST(request: Request) {
   if (!parsed.success) return reply({ status: "invalid" }, 400);
   const { action, used: guestUsed = 0 } = parsed.data;
 
-  const day = dayKey();
-  if (parsed.data.day !== day) return reply({ status: "new_day" });
+  // Hoy o un día anterior (las palabras pasadas también se pueden jugar).
+  const day = parsed.data.day;
+  if (!isPlayableDay(day)) return reply({ status: "invalid" }, 400);
   const word = secretWordFor(day);
   const secret = foldWord(word);
   const player = await currentPlayer();
@@ -151,7 +144,8 @@ export async function POST(request: Request) {
   if ([...guess].length !== [...secret].length) return reply({ status: "wrong_length" });
   if (plays?.some((p) => p.guess === guess)) return reply({ status: "repeated" });
   if (guess !== secret) {
-    const { data: found } = await db.rpc("dictionary_lookup_folded", { p_folded: guess });
+    const { data: found, error } = await db.rpc("dictionary_lookup_folded", { p_folded: guess });
+    if (error) return reply({ status: "retry" }); // fallo momentáneo: no culpar a la palabra
     if (!found) return reply({ status: "not_in_dictionary" });
   }
 
