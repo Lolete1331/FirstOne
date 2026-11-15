@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { useRpc } from "@/lib/hooks/use-rpc";
+import { ProfileExtras } from "./profile-extras";
 import { useAuth } from "@/components/auth-provider";
 import { Empty, Skeleton, Tabs } from "@/components/ui";
 import { Medal } from "@/components/medal";
@@ -78,6 +79,8 @@ export function ProfileView({ username }: { username: string }) {
           ))}
         </div>
       </div>
+
+      <ProfileExtras username={p.username} isMe={Boolean(isMe)} />
 
       <div className="mt-8 flex items-center justify-between gap-3">
         <h2 className="font-display font-bold text-xl">Sus palabras</h2>

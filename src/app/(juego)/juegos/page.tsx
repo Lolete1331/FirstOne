@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { StreakBanner } from "./streak-banner";
 import "@fontsource/cormorant-garamond/latin-700.css";
 import "@fontsource/eb-garamond/latin-400.css";
 import "@fontsource/eb-garamond/latin-400-italic.css";
@@ -76,7 +77,8 @@ export default function JuegosPage() {
       <p className="mt-2 text-center font-[family-name:'EB_Garamond'] italic text-lg text-muted">
         Para jugar con el español un ratito al día. Cambian todos a la vez, a medianoche (hora universal).
       </p>
-      <ul className="mt-8 grid gap-4 md:grid-cols-2">
+      <StreakBanner />
+      <ul className="mt-6 grid gap-4 md:grid-cols-2">
         {GAMES.map((g) => (
           <li key={g.href}>
             <Link

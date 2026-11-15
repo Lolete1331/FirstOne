@@ -9,6 +9,7 @@ import { useDayParam } from "@/lib/hooks/use-day-param";
 import { dayKey, dayNumber } from "@/lib/oculta/game";
 import { hangmanLetters, hangmanWords, MAX_MISSES, ROUNDS } from "@/lib/juegos/ahorcado";
 import { maskWord, pickDefinition, shorten } from "@/lib/juegos/significa-text";
+import { recordGameResult } from "@/lib/juegos/record";
 
 const KEYS = ["QWERTYUIOP", "ASDFGHJKLÑ", "ZXCVBNM"];
 type Saved = { guesses: string[][] }; // letras probadas en cada ronda
@@ -73,7 +74,15 @@ function Game({ day, isToday }: { day: string; isToday: boolean }) {
   const update = (s: Saved) => {
     setState(s);
     save(day, s);
+    // ¿Terminadas las tres palabras? → a la cuenta.
+    const res = s.guesses.map((g, i) => (words[i] ? roundState(words[i].word, g) : null));
+    if (s.guesses.length >= ROUNDS && res.every((r) => r?.over)) recordGameResult("ahorcado", day, res.filter((r) => r?.won).length, ROUNDS);
   };
+
+  useEffect(() => {
+    if (allDone) recordGameResult("ahorcado", day, won, ROUNDS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const guess = (l: string) => {
     if (rs.over || guessed.includes(l)) return;
     const g = state.guesses.map((x, i) => (i === round ? [...x, l] : x));

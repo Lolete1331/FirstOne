@@ -5,6 +5,7 @@ import { mmss, PaperCard } from "@/components/juegos/paper";
 import { NextDay } from "@/components/juegos/next-day";
 import { ArchiveLinks, type DayBadge } from "@/components/juegos/day-archive";
 import { useDayParam } from "@/lib/hooks/use-day-param";
+import { recordGameResult } from "@/lib/juegos/record";
 import Link from "next/link";
 import { dayKey } from "@/lib/oculta/game";
 import { generateSopa, lineCells, matchWord, type Cell } from "@/lib/juegos/sopa";
@@ -63,6 +64,11 @@ function Board({ day, isToday }: { day: string; isToday: boolean }) {
   const done = state.found.length === sopa.words.length;
 
   useEffect(() => {
+    if (done) recordGameResult("sopa", day, sopa.words.length, sopa.words.length, state.elapsed ?? undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (done || !state.startedAt) return;
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
@@ -92,6 +98,7 @@ function Board({ day, isToday }: { day: string; isToday: boolean }) {
         const startedAt = state.startedAt ?? Date.now();
         const elapsed = found.length === sopa.words.length ? Math.round((Date.now() - startedAt) / 1000) : null;
         update({ found, startedAt, elapsed });
+        if (elapsed !== null) recordGameResult("sopa", day, sopa.words.length, sopa.words.length, elapsed);
         setFlash(`¡${sopa.words[wi].word}!`);
         setTimeout(() => setFlash(null), 1200);
         return true;

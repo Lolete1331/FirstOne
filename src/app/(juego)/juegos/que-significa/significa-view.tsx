@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PaperCard } from "@/components/juegos/paper";
 import { ArchiveLinks, type DayBadge } from "@/components/juegos/day-archive";
 import { useDayParam } from "@/lib/hooks/use-day-param";
+import { recordGameResult } from "@/lib/juegos/record";
 import { NextDay } from "@/components/juegos/next-day";
 import type { Quiz } from "@/lib/juegos/significa";
 
@@ -54,6 +55,8 @@ function SignificaGame({ day }: { day?: string }) {
         setAnswers(a);
         setCurrent(Math.min(a.length, q.questions.length - 1));
         setShowSummary(a.length >= q.questions.length); // ya lo había terminado
+        if (a.length >= q.questions.length)
+          recordGameResult("significa", q.day, a.filter((x, k) => x === q.questions[k].answer).length, q.questions.length);
       })
       .catch(() => active && setError(true));
     return () => {
@@ -77,6 +80,8 @@ function SignificaGame({ day }: { day?: string }) {
     next[current] = i;
     setAnswers(next);
     save(quiz.day, next);
+    if (next.length >= quiz.questions.length)
+      recordGameResult("significa", quiz.day, next.filter((x, k) => x === quiz.questions[k].answer).length, quiz.questions.length);
   };
 
   const marks = quiz.questions.map((qq, i) => (answers[i] === undefined ? "▫️" : answers[i] === qq.answer ? "✅" : "❌")).join("");

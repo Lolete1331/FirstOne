@@ -73,6 +73,17 @@ export default function PrivacidadPage() {
             </tr>
             <tr>
               <td>
+                <b>Tus resultados en los juegos de palabras</b> (si juegas con cuenta) y los <b>grupos</b> a los que te unes
+              </td>
+              <td>
+                Calcular tu racha de días seguidos, tus insignias y el resumen de juegos de tu perfil, que son <b>públicos</b>.
+                En los grupos, sus miembros ven tu nombre de usuario, tu país, tus medallas del año, tu racha y cuántos juegos
+                has terminado esa semana.
+              </td>
+              <td>Mientras tengas cuenta (puedes salir de un grupo cuando quieras).</td>
+            </tr>
+            <tr>
+              <td>
                 <b>Tu dirección IP</b>
               </td>
               <td>Evitar abusos (limitar cuántas palabras se envían por minuto desde una misma conexión).</td>

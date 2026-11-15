@@ -82,6 +82,12 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   «Compartir»), con imagen para redes generada al vuelo (`opengraph-image.tsx`, fuentes en `assets/fonts/`). Datos con
   `getWordInfo` (`src/lib/words/word-page.ts`, caché de minutos). Las palabras ocultas no tienen página. En el sitemap,
   las 5.000 palabras con dueño más recientes. Botón «Compartir» también en la medalla y enlace desde el historial.
+- Rachas, insignias y grupos (16-nov): los juegos guardan el resultado en la cuenta (`record_game_result`, tabla
+  `game_results`; `src/lib/juegos/record.ts`). Racha = días UTC seguidos con actividad (palabras, juegos o palabra
+  oculta), `user_streak`. Insignias: datos en `user_badges`, nombres y umbrales en `src/lib/juegos/badges.ts`; se ven en
+  el perfil (`profile-extras.tsx`) con `user_game_stats`. Grupos: `/grupos` y `/grupos/[código]` (6 caracteres),
+  tablas `groups`/`group_members`, funciones `create_group`, `join_group`, `leave_group`, `remove_group_member`,
+  `delete_group`, `my_groups`, `group_info` (la clasificación solo la ven los miembros). Tests en `tests/db/social.test.ts`.
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 
@@ -127,7 +133,7 @@ a las estadísticas (pendiente de decidir).
 5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
    El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
 6. ~~Imagen para compartir~~ hecha (15-nov): `/palabra/…` con tarjeta para redes.
-7. Palabra del día · ~~8. Página pública por palabra~~ hecha · rachas.
+7. Palabra del día · ~~8. Página pública por palabra~~ hecha · ~~rachas~~ hechas (con insignias y grupos).
 
 ## Trucos aprendidos (sandbox)
 

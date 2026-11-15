@@ -7,6 +7,7 @@ import { NextDay } from "./next-day";
 import { ArchiveLinks, type DayBadge } from "./day-archive";
 import { dayKey, dayNumber } from "@/lib/oculta/game";
 import type { QuizItem } from "@/lib/juegos/quiz-games";
+import { recordGameResult, type GameKey } from "@/lib/juegos/record";
 
 const storageKey = (game: string, day: string) => `${game}:${day}`;
 function load(game: string, day: string): number[] {
@@ -67,6 +68,12 @@ function Quiz({ config, day, isToday }: { config: QuizConfig; day: string; isTod
 
   const done = answers.length >= total;
   const item = items[current];
+
+  // Si se terminó antes de entrar con la cuenta (o en otro dispositivo), se guarda al volver.
+  useEffect(() => {
+    if (answers.length >= total) recordGameResult(config.game as GameKey, day, answers.filter((a, k) => a === items[k].answer).length, total);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const chosen = answers[current];
   const answered = chosen !== undefined;
   const score = answers.filter((a, i) => a === items[i].answer).length;
@@ -77,6 +84,9 @@ function Quiz({ config, day, isToday }: { config: QuizConfig; day: string; isTod
     next[current] = i;
     setAnswers(next);
     save(config.game, day, next);
+    if (next.filter((a) => a !== undefined).length >= total) {
+      recordGameResult(config.game as GameKey, day, next.filter((a, k) => a === items[k].answer).length, total);
+    }
   };
 
   const marks = items.map((it, i) => (answers[i] === undefined ? "▫️" : answers[i] === it.answer ? "✅" : "❌")).join("");

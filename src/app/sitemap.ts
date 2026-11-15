@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ["/jugar", "daily", 1],
     ["/que-es", "monthly", 0.9],
     ["/juegos", "daily", 0.9],
+    ["/grupos", "monthly", 0.6],
     ["/palabra-oculta", "daily", 0.9],
     ["/juegos/que-significa", "daily", 0.8],
     ["/juegos/sopa-de-letras", "daily", 0.8],

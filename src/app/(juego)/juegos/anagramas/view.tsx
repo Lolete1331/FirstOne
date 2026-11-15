@@ -8,6 +8,7 @@ import { ArchiveLinks, type DayBadge } from "@/components/juegos/day-archive";
 import { useDayParam } from "@/lib/hooks/use-day-param";
 import { dayKey, dayNumber, foldWord } from "@/lib/oculta/game";
 import { levelFor, MIN_LEN, points } from "@/lib/juegos/anagramas";
+import { recordGameResult } from "@/lib/juegos/record";
 
 type Data = { day: string; letters: string[]; words: string[]; display: Record<string, string> };
 type Saved = { found: string[]; gaveUp: boolean };
@@ -56,7 +57,9 @@ function Game({ day: askedDay }: { day?: string }) {
       .then((d) => {
         if (!active) return;
         setData(d);
-        setState(load(d.day));
+        const s = load(d.day);
+        setState(s);
+        if (s.found.length) recordGameResult("anagramas", d.day, s.found.length, d.words.length);
       })
       .catch(() => active && setError(true));
     return () => {
@@ -86,6 +89,7 @@ function Game({ day: askedDay }: { day?: string }) {
     if (state.found.includes(w)) return flash("Esa ya la tienes");
     if (!valid.has(w)) return flash("No está en el diccionario (valen palabras en singular)");
     update({ ...state, found: [...state.found, w] });
+    recordGameResult("anagramas", data.day, state.found.length + 1, data.words.length);
     flash([...w].length === 7 ? `¡Con las 7 letras! +${points(w)}` : `¡Bien! +${points(w)}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, state, word, valid]);

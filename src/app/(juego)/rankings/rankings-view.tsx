@@ -34,7 +34,8 @@ export function RankingsView() {
   return (
     <div>
       <PageTitle kicker={`Temporada ${year}`} title="Ranking" accent="mundial">
-        Ordenado por medallas 🥇 (palabras de las que eres dueño); a igualdad, por palabras escritas.
+        Ordenado por medallas 🥇 (palabras de las que eres dueño); a igualdad, por palabras escritas.{" "}
+        <Link href="/grupos" className="underline text-text">👥 Crea un grupo</Link> para competir solo con tu clase, tus amigos o tu familia.
       </PageTitle>
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Tabs value={tab} onChange={setTab} options={[["users", "Jugadores"], ["countries", "Países"]]} />
