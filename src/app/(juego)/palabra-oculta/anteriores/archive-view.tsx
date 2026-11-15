@@ -46,6 +46,12 @@ export function ArchiveView() {
           ¿Te perdiste alguna? Juégala ahora. La clasificación de cada día solo cuenta a quien la encontró ese día.
         </p>
 
+        {data && data.mine === null && (
+          <p className="mt-4 rounded-xl border border-[#d9c9a3] bg-white/60 px-4 py-2.5 text-center text-sm text-[#4a4239]">
+            Sin cuenta, tus resultados se guardan solo en este dispositivo.{" "}
+            <Link href="/login?next=%2Fpalabra-oculta%2Fanteriores" className="font-bold underline">Crear cuenta gratis</Link>
+          </p>
+        )}
         {error ? (
           <p className="mt-6 text-center text-sm text-[#8c2f39]">No hemos podido cargar la lista. Recarga la página.</p>
         ) : !data ? (

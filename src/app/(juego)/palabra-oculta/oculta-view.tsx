@@ -233,6 +233,13 @@ export function OcultaView({ day: askedDay }: { day?: string }) {
         </div>
 
         <p className="mt-3 min-h-6 text-center text-sm text-[#8c2f39]">{message}</p>
+        {guest && !game.finished && game.rows.length === 0 && (
+          <p className="-mt-1 mb-2 text-center text-xs text-[#8a7a5c]">
+            Juegas sin cuenta.{" "}
+            <Link href={loginHref(info?.today ? undefined : info?.day)} className="underline">Crea una gratis</Link> para salir en la
+            clasificación de los primeros.
+          </p>
+        )}
 
         {game.hint && (
           <div className="mt-2 rounded-xl border border-[#d9c9a3] bg-white/60 px-4 py-3 font-[family-name:'EB_Garamond']">
@@ -376,11 +383,7 @@ function Result({ info, game, tries, position, guest }: { info: OcultaState; gam
           {position === 1 ? "🥇 ¡Has sido la primera persona del mundo en encontrarla hoy!" : `Eres la persona n.º ${position} en encontrarla hoy.`}
         </p>
       )}
-      {guest && game.solved && info.today && (
-        <p className="mt-3 text-sm text-[#6b6256]">
-          <Link href="/login?next=/palabra-oculta" className="underline">Entra con tu cuenta</Link> y mañana podrás salir en la clasificación.
-        </p>
-      )}
+      {guest && <CreateAccount solved={game.solved} today={info.today} day={info.day} />}
       <div className="mt-4 flex flex-wrap justify-center gap-3">
         <button onClick={share} className="rounded-full bg-[#2b2622] text-[#f7f0e1] font-bold px-6 py-2.5">
           {copied ? "¡Copiado!" : "Compartir resultado"}
@@ -404,6 +407,33 @@ function changeTimeLocal(): string {
   const d = new Date();
   const next = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1));
   return next.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
+}
+
+const loginHref = (day?: string) =>
+  `/login?next=${encodeURIComponent(day ? `/palabra-oculta?dia=${day}` : "/palabra-oculta")}`;
+
+/** Invitación a crear cuenta al terminar una partida sin cuenta. */
+function CreateAccount({ solved, today, day }: { solved: boolean; today: boolean; day: string }) {
+  const title = !today
+    ? "Guarda todas tus partidas"
+    : solved
+      ? "¿Quieres salir en la clasificación?"
+      : "Vuelve mañana con ventaja";
+  const text = !today
+    ? "Con una cuenta, tus resultados se guardan en cualquier móvil u ordenador."
+    : solved
+      ? "Crea tu cuenta y, desde mañana, si la encuentras antes que nadie aparecerás entre los primeros del día."
+      : "Crea tu cuenta para competir cada día en la clasificación y guardar tus partidas en cualquier dispositivo.";
+  return (
+    <div className="mt-5 rounded-2xl border-2 border-[#b08a2e]/60 bg-white/70 px-5 py-4 text-center">
+      <p className="font-[family-name:'Cormorant_Garamond'] font-bold text-2xl leading-tight">{title}</p>
+      <p className="mt-1 text-sm text-[#4a4239]">{text}</p>
+      <Link href={loginHref(today ? undefined : day)} className="mt-3 inline-block rounded-full bg-[#b08a2e] text-white font-bold px-6 py-2.5">
+        Crear cuenta gratis
+      </Link>
+      <p className="mt-2 text-xs text-[#8a7a5c]">Es gratis y se tarda menos de un minuto. Con tu cuenta también puedes conquistar palabras.</p>
+    </div>
+  );
 }
 
 function NextWord({ className = "mt-4 text-sm text-[#6b6256]" }: { className?: string }) {
