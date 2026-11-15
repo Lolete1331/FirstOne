@@ -208,6 +208,7 @@ export function OcultaView() {
           <p className="mt-1 font-[family-name:'EB_Garamond'] italic text-[#6b6256]">
             {info ? `Una palabra de ${length} letras · ${MAX_ATTEMPTS} intentos` : "Cargando…"}
           </p>
+          {!game.finished && <NextWord className="mt-1 text-xs text-[#8a7a5c]" />}
         </header>
 
         {/* Tablero */}
@@ -293,7 +294,7 @@ export function OcultaView() {
         <details className="mt-6 border-t border-[#e2d6bb] pt-4 font-[family-name:'EB_Garamond'] text-[#4a4239]">
           <summary className="cursor-pointer text-sm uppercase tracking-[0.2em] text-[#8a7a5c]">Cómo se juega</summary>
           <ul className="mt-2 space-y-1.5 text-[17px] leading-snug list-disc pl-5">
-            <li>Cada día hay una palabra escondida, la misma para todo el mundo. Cambia a las 00:00 UTC (la 1:00 en España).</li>
+            <li>Cada día hay una palabra escondida, la misma para todo el mundo. Cambia cada día a las 00:00 UTC (en España, a la 1:00 en invierno y a las 2:00 en verano).</li>
             <li>
               Escribe palabras del diccionario con el mismo número de letras. Después de cada intento:
               <span className="mx-1 inline-block rounded px-1.5 bg-[#b08a2e] text-white">dorado</span> letra en su sitio,
@@ -398,10 +399,21 @@ function Result({ info, game, tries, position, guest }: { info: OcultaState; gam
   );
 }
 
-function NextWord() {
+/** Hora (en el reloj de quien mira) a la que cambia la palabra: las 00:00 UTC. */
+function changeTimeLocal(): string {
+  const d = new Date();
+  const next = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1));
+  return next.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
+}
+
+function NextWord({ className = "mt-4 text-sm text-[#6b6256]" }: { className?: string }) {
   const [ms, setMs] = useState<number | null>(null);
+  const [at, setAt] = useState<string | null>(null);
   useEffect(() => {
-    const tick = () => setMs(msToNextDay());
+    const tick = () => {
+      setMs(msToNextDay());
+      setAt(changeTimeLocal());
+    };
     const first = setTimeout(tick, 0);
     const t = setInterval(tick, 1000);
     return () => {
@@ -413,8 +425,9 @@ function NextWord() {
   const s = Math.floor(ms / 1000);
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
-    <p className="mt-4 text-sm text-[#6b6256]">
-      Próxima palabra en <span className="font-mono">{pad(Math.floor(s / 3600))}:{pad(Math.floor((s % 3600) / 60))}:{pad(s % 60)}</span>
+    <p className={className}>
+      Nueva palabra cada día a las {at} (tu hora) · próxima en{" "}
+      <span className="font-mono">{pad(Math.floor(s / 3600))}:{pad(Math.floor((s % 3600) / 60))}:{pad(s % 60)}</span>
     </p>
   );
 }
