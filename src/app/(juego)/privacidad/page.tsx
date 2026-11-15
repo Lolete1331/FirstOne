@@ -61,6 +61,18 @@ export default function PrivacidadPage() {
             </tr>
             <tr>
               <td>
+                <b>Tus partidas de «La palabra oculta»</b> (si juegas con cuenta): qué palabras probaste, si usaste la
+                pista y cuándo la encontraste
+              </td>
+              <td>
+                Que no se pueda repetir la partida y la clasificación del día. En la clasificación son <b>públicos</b> tu
+                nombre de usuario, tu país, los intentos y la hora. Si juegas sin cuenta, la partida se guarda solo en tu
+                navegador.
+              </td>
+              <td>Mientras tengas cuenta.</td>
+            </tr>
+            <tr>
+              <td>
                 <b>Tu dirección IP</b>
               </td>
               <td>Evitar abusos (limitar cuántas palabras se envían por minuto desde una misma conexión).</td>
@@ -94,7 +106,8 @@ export default function PrivacidadPage() {
           (París).
         </li>
         <li>
-          <b>Vercel</b>: aloja la web. Puede tratar datos técnicos de tu visita (como la IP) para servirte las páginas.
+          <b>Vercel</b>: aloja la web. Puede tratar datos técnicos de tu visita (como la IP) para servirte las páginas, y
+          cuenta las visitas de forma anónima y sin cookies (Vercel Web Analytics).
         </li>
         <li>
           <b>Google</b>: solo si eliges «Continuar con Google». Google te identifica y nos facilita tu email; su uso se rige

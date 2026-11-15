@@ -52,6 +52,10 @@ export default function CookiesPage() {
         ajustes elegidos (fondo, letra, tamaño, espaciado) y las estrellas conseguidas. Estos datos <b>no salen de tu
         dispositivo</b> y nunca nos llegan.
       </p>
+      <p>
+        Si juegas a <Link href="/palabra-oculta">«La palabra oculta»</Link> sin cuenta, tu partida del día también se guarda
+        solo en tu navegador, para que no la pierdas al recargar la página.
+      </p>
 
       <h2>Estadísticas de visitas</h2>
       <p>

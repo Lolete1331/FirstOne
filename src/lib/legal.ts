@@ -7,5 +7,5 @@ export const LEGAL = {
   ownerName: process.env.LEGAL_OWNER_NAME?.trim() || "Diego y Álex, creadores de FirstOne",
   contactEmail: process.env.LEGAL_CONTACT_EMAIL?.trim() || null,
   location: "Navarra (España)",
-  updated: "14 de noviembre de 2026",
+  updated: "15 de noviembre de 2026",
 };
