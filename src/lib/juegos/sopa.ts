@@ -11,8 +11,15 @@ export type Cell = [row: number, col: number];
 export type PlacedWord = { word: string; letters: string; cells: Cell[] };
 export type Sopa = { day: string; number: number; theme: string; size: number; grid: string[][]; words: PlacedWord[] };
 
-/** Direcciones: derecha, abajo, diagonales y (para dar algo de dificultad) izquierda y arriba. */
-const DIRS: Cell[] = [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0]];
+/** Direcciones rectas: derecha, abajo, izquierda y arriba. */
+const STRAIGHT: Cell[] = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+/** Diagonales en los cuatro sentidos (también hacia atrás, para que cueste más). */
+const DIAGONAL: Cell[] = [[1, 1], [-1, 1], [1, -1], [-1, -1]];
+/** Desde este día, cada sopa lleva varias palabras en diagonal (la de antes no cambia a mitad de partida). */
+const DIAGONAL_FROM = "2026-11-16";
+export const MIN_DIAGONAL = 3;
+
+export const isDiagonal = (cells: Cell[]) => cells.length > 1 && cells[0][0] !== cells[1][0] && cells[0][1] !== cells[1][1];
 const FILL = "AAAAAEEEEEIIIOOOOUUSSSRRRNNNLLLDDTTCCMMPPBGVYQHFZJÑX";
 
 /** Letras de la sopa: mayúsculas, sin tildes ni diéresis (la ñ se mantiene). */
@@ -41,11 +48,17 @@ export function generateSopa(day: string): Sopa {
     const words: PlacedWord[] = [];
     const sorted = [...theme.words].sort((a, b) => sopaLetters(b).length - sopaLetters(a).length);
     let ok = true;
-    for (const word of sorted) {
+    const hard = day >= DIAGONAL_FROM;
+    // Antes: direcciones al azar entre las seis de siempre. Ahora: al menos 3 palabras en diagonal
+    // y el resto, mitad y mitad.
+    const oldDirs: Cell[] = [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0]];
+    const diagonalSlots = new Set(seededShuffle(sorted.map((_, i) => i), `sopa-diag:${day}:${attempt}`).slice(0, MIN_DIAGONAL));
+    for (const [wi, word] of sorted.entries()) {
       const letters = [...sopaLetters(word)];
+      const dirs = !hard ? oldDirs : diagonalSlots.has(wi) ? DIAGONAL : [...STRAIGHT, ...DIAGONAL];
       let placed: Cell[] | null = null;
       for (let t = 0; t < 300 && !placed; t++) {
-        const [dr, dc] = DIRS[Math.floor(rnd() * DIRS.length)];
+        const [dr, dc] = dirs[Math.floor(rnd() * dirs.length)];
         const r0 = Math.floor(rnd() * size);
         const c0 = Math.floor(rnd() * size);
         const cells: Cell[] = letters.map((_, i) => [r0 + dr * i, c0 + dc * i]);

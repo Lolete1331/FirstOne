@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { THEMES } from "@/lib/juegos/sopa-temas";
-import { generateSopa, lineCells, matchWord, SOPA_SIZE, sopaLetters } from "@/lib/juegos/sopa";
+import { generateSopa, isDiagonal, lineCells, matchWord, MIN_DIAGONAL, SOPA_SIZE, sopaLetters } from "@/lib/juegos/sopa";
 
 const DICT = new Set(
   readFileSync(join(process.cwd(), "supabase/data/dictionary.tsv"), "utf8").split("\n").map((l) => l.split("\t")[0]).filter(Boolean),
@@ -30,6 +30,7 @@ describe("Sopa de letras", () => {
         expect(matchWord(s, [...w.cells].reverse())).toBeGreaterThanOrEqual(0);
       }
       expect(s.grid.flat().every((ch) => /^[A-ZÑ]$/.test(ch))).toBe(true);
+      if (day >= "2026-11-16") expect(s.words.filter((w) => isDiagonal(w.cells)).length, day).toBeGreaterThanOrEqual(MIN_DIAGONAL);
     }
     expect(generateSopa("2026-11-20")).toEqual(generateSopa("2026-11-20"));
   });
