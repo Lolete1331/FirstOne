@@ -121,7 +121,9 @@ a las estadísticas (pendiente de decidir).
 2. **Turnstile** (anti-bots): crear clave en Cloudflare y poner `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y
    `TURNSTILE_SECRET_KEY` en Vercel (el código ya está preparado en `src/lib/human.ts`).
 3. ~~Páginas legales~~ hechas (14-nov-2026); contacto público del proyecto en `LEGAL_CONTACT_EMAIL` (Vercel), también para sugerencias (pie y FAQ).
-4. Vigilar límites del plan gratuito de Supabase (≈200 conexiones realtime simultáneas).
+4. Vigilar límites: tarea programada diaria «Vigilar límites de FirstOne» (21:13 hora de Madrid, sesión nueva, solo
+   lectura) que avisa al móvil si BD ≥70 %, correos ≥70/día, pico ≥300 palabras/min, ≥500 cuentas/día, despliegue
+   en error o tokens caducados. Supabase gratis: ≈200 conexiones realtime, 500 MB, 50.000 MAU.
 5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
    El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
 6. ~~Imagen para compartir~~ hecha (15-nov): `/palabra/…` con tarjeta para redes.
