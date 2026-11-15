@@ -310,6 +310,9 @@ export function OcultaView({ day: askedDay }: { day?: string }) {
         <Link href="/palabra-oculta/anteriores" className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-bold hover:border-lime/60">
           📚 Palabras anteriores
         </Link>
+        <Link href="/juegos" className="ml-2 inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-bold hover:border-lime/60">
+          🎲 Más juegos
+        </Link>
       </div>
     </div>
   );

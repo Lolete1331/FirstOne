@@ -12,9 +12,9 @@ export function BottomNav() {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-line bg-bg/80 backdrop-blur-xl"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-6">
         {NAV_ITEMS.map((item) => {
-          const active = pathname.startsWith(item.href);
+          const active = pathname.startsWith(item.href) || (item.href === "/juegos" && pathname.startsWith("/palabra-oculta"));
           return (
             <li key={item.href}>
               <Link href={item.href} className="relative flex flex-col items-center gap-0.5 py-2.5 text-[10px] min-[360px]:text-[11px] font-medium whitespace-nowrap tracking-tight">

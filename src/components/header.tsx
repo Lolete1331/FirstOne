@@ -46,7 +46,7 @@ export function Header() {
         <Logo />
         <nav className="hidden md:flex items-center gap-1 ml-4">
           {NAV_ITEMS.map((item) => {
-            const active = pathname.startsWith(item.href);
+            const active = pathname.startsWith(item.href) || (item.href === "/juegos" && pathname.startsWith("/palabra-oculta"));
             return (
               <Link
                 key={item.href}

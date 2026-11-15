@@ -53,8 +53,9 @@ export default function CookiesPage() {
         dispositivo</b> y nunca nos llegan.
       </p>
       <p>
-        Si juegas a <Link href="/palabra-oculta">«La palabra oculta»</Link> sin cuenta, tu partida del día también se guarda
-        solo en tu navegador, para que no la pierdas al recargar la página.
+        Si juegas a <Link href="/palabra-oculta">«La palabra oculta»</Link> sin cuenta, o a los otros{" "}
+        <Link href="/juegos">juegos de palabras</Link> (¿Qué significa?, Sopa de letras), tu partida del día también se guarda solo
+        en tu navegador, para que no la pierdas al recargar la página.
       </p>
 
       <h2>Estadísticas de visitas</h2>

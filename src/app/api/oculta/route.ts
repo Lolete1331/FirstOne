@@ -5,6 +5,7 @@ import { getAdminSupabase } from "@/lib/supabase/admin";
 import { dayKey, dayNumber, foldWord, isFoldedWord, isPlayableDay, MAX_ATTEMPTS, scoreGuess } from "@/lib/oculta/game";
 import { secretWordFor } from "@/lib/oculta/secret";
 import { lookupDefinition } from "@/lib/words/lookup";
+import { maskWord } from "@/lib/juegos/significa-text";
 import { raeUrl, wiktionaryUrl } from "@/lib/words/definitions";
 import type { GuessResponse, OcultaState, RankingRow, Reveal, Row } from "@/lib/oculta/types";
 
@@ -24,12 +25,6 @@ const Body = z.object({
   guess: z.string().max(40).optional(),
   used: z.number().int().min(0).max(MAX_ATTEMPTS).optional(),
 });
-
-/** Quita la palabra (y sus derivados evidentes) del texto de la pista. */
-function maskWord(text: string, secret: string): string {
-  const root = foldWord(secret).slice(0, Math.max(4, secret.length - 2));
-  return text.replace(/[\p{L}]+/gu, (w) => (foldWord(w).startsWith(root) ? "…" : w));
-}
 
 async function hintFor(secret: string): Promise<string | null> {
   const r = await lookupDefinition(secret, null);

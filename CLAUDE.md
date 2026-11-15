@@ -51,7 +51,7 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
 
 ## Estructura de la web
 
-- `/` portada con dos opciones · `/jugar` el juego (grupo de rutas `src/app/(juego)/` con su cabecera y menú).
+- `/` portada (juego, lectura y juegos de palabras) · `/jugar` el juego (grupo de rutas `src/app/(juego)/` con su cabecera y menú).
 - `/lectura` sección para niños con dislexia (`src/app/lectura/`, componentes en `src/components/lectura/`,
   datos en `src/lib/lectura/`): diseño tranquilo propio, ajustes de fondo/letra/tamaño/espaciado guardados en
   localStorage, voz con speechSynthesis, estrellas solo en el dispositivo. **Sin cuentas ni datos de menores.**
@@ -64,6 +64,10 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   (clasificación «los primeros en encontrarla»); sin cuenta, progreso en localStorage.
   Palabras anteriores en `/palabra-oculta/anteriores` (se juegan con `?dia=AAAA-MM-DD`); la clasificación de cada
   día solo cuenta los aciertos de ese mismo día UTC (`hidden_word_on_time`). No usar el nombre «Wordle».
+- `/juegos` apartado «Juegos de palabras» (en el menú): La palabra oculta, `/juegos/que-significa` (5 palabras curiosas
+  al día, lista en `src/lib/juegos/significa-palabras.ts`, definiciones de Wikcionario vía `lookupDefinition`, API
+  `/api/significa`) y `/juegos/sopa-de-letras` (tema diario de `src/lib/juegos/sopa-temas.ts`, generada en el navegador
+  a partir de la fecha). Ambos sin cuenta; progreso en localStorage. Cambian a las 00:00 UTC.
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 
