@@ -4,7 +4,7 @@ import { lookupDefinition } from "@/lib/words/lookup";
 import { wiktionaryUrl } from "@/lib/words/definitions";
 import { seededRandom, seededShuffle } from "./random";
 import { MEANING_WORDS } from "./significa-palabras";
-import { firstUsefulSense, maskWord, shorten } from "./significa-text";
+import { maskWord, pickDefinition, shorten } from "./significa-text";
 
 export const QUESTIONS_PER_DAY = 5;
 export type Question = { word: string; options: string[]; answer: number; full: string; sourceUrl: string };
@@ -16,7 +16,7 @@ const cache = new Map<string, Quiz>();
 async function definitionOf(word: string): Promise<string | null> {
   const r = await lookupDefinition(word, null);
   if (!r.ok) return null;
-  return firstUsefulSense(r.groups.flatMap((g) => g.senses.map((s) => s.text)));
+  return pickDefinition(r.groups.flatMap((g) => g.senses.map((s) => s.text)), word);
 }
 
 /** Toma `count` palabras con definición a partir de una posición de la lista (dando la vuelta si hace falta). */

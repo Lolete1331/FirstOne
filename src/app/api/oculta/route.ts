@@ -5,7 +5,7 @@ import { getAdminSupabase } from "@/lib/supabase/admin";
 import { dayKey, dayNumber, foldWord, isFoldedWord, isPlayableDay, MAX_ATTEMPTS, scoreGuess } from "@/lib/oculta/game";
 import { secretWordFor } from "@/lib/oculta/secret";
 import { lookupDefinition } from "@/lib/words/lookup";
-import { maskWord } from "@/lib/juegos/significa-text";
+import { maskWord, pickDefinition } from "@/lib/juegos/significa-text";
 import { raeUrl, wiktionaryUrl } from "@/lib/words/definitions";
 import type { GuessResponse, OcultaState, RankingRow, Reveal, Row } from "@/lib/oculta/types";
 
@@ -29,8 +29,8 @@ const Body = z.object({
 async function hintFor(secret: string): Promise<string | null> {
   const r = await lookupDefinition(secret, null);
   if (!r.ok) return null;
-  const first = r.groups.flatMap((g) => g.senses.map((s) => s.text)).find((t) => t.length > 3);
-  return first ? maskWord(first, secret) : null;
+  const def = pickDefinition(r.groups.flatMap((g) => g.senses.map((s) => s.text)), secret);
+  return def ? maskWord(def, secret) : null;
 }
 
 async function revealFor(secret: string): Promise<Reveal> {
