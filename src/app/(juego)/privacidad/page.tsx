@@ -17,9 +17,9 @@ export default function PrivacidadPage() {
         lo contamos con claridad. Si tienes cualquier duda, escríbenos a <ContactEmail />.
       </p>
 
-      <h2>1. Quién es el responsable</h2>
+      <h2>1. Quién es responsable de tus datos</h2>
       <p>
-        El responsable de tus datos es <b>{LEGAL.ownerName}</b>, con domicilio en {LEGAL.location}. FirstOne es un proyecto
+        Responsables del tratamiento de tus datos: <b>{LEGAL.ownerName}</b>, con domicilio en {LEGAL.location}. FirstOne es un proyecto
         personal, gratuito y sin ánimo de lucro. Contacto: <ContactEmail />.
       </p>
 
