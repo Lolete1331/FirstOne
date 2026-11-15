@@ -78,6 +78,10 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   Sopa: 62 temas (`words` + `more`, 8 palabras al día). Refranes: 223 (se repiten cada ~45 días, rebarajados),
   con dos finales falsos creíbles escritos a mano para cada uno en `refranes-falsos.ts` (mismo orden).
   Días anteriores en `/juegos/<juego>/anteriores` y `?dia=AAAA-MM-DD` (componente `src/components/juegos/day-archive.tsx`).
+- `/palabra/[palabra]` página pública de cada palabra (dueño del año, años anteriores, significado en caché, botón
+  «Compartir»), con imagen para redes generada al vuelo (`opengraph-image.tsx`, fuentes en `assets/fonts/`). Datos con
+  `getWordInfo` (`src/lib/words/word-page.ts`, caché de minutos). Las palabras ocultas no tienen página. En el sitemap,
+  las 5.000 palabras con dueño más recientes. Botón «Compartir» también en la medalla y enlace desde el historial.
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 
@@ -120,8 +124,8 @@ a las estadísticas (pendiente de decidir).
 4. Vigilar límites del plan gratuito de Supabase (≈200 conexiones realtime simultáneas).
 5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
    El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
-6. **Imagen para compartir** ««palabra» es de @usuario 🥇» (WhatsApp/Instagram/X).
-7. Palabra del día · 8. Página pública por palabra (`/palabra/…`) para SEO · rachas.
+6. ~~Imagen para compartir~~ hecha (15-nov): `/palabra/…` con tarjeta para redes.
+7. Palabra del día · ~~8. Página pública por palabra~~ hecha · rachas.
 
 ## Trucos aprendidos (sandbox)
 

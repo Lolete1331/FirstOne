@@ -12,6 +12,7 @@ import { MAX_WORD_LENGTH, normalizeWord } from "@/lib/words/normalize";
 import { formatClaimDate, formatPreciseTime } from "@/lib/time/year";
 import { UserLink } from "./user-link";
 import { DefinitionButton } from "./definition-button";
+import { ShareWordButton } from "./share-word-button";
 import Link from "next/link";
 
 function DiplomaLink({ word, year }: { word: string; year?: number }) {
@@ -293,6 +294,7 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
           <p className="mt-2 text-sm text-muted font-mono">Reclamada a las {r.claimed_at && formatPreciseTime(r.claimed_at)}</p>
           {r.word && (
             <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <ShareWordButton word={r.word} owner={profile?.username ?? null} className="inline-flex items-center gap-1.5 rounded-full bg-gold text-bg px-3.5 py-1.5 text-sm font-bold hover:brightness-110 transition" />
               <DefinitionButton word={r.word} />
               <DiplomaLink word={r.word} year={r.year} />
             </div>
@@ -329,7 +331,8 @@ function ResultCard({ r, onClose }: { r: ClaimResponse; onClose: () => void }) {
                 Reclamaste <b className="text-text">{r.word}</b> el {r.claimed_at && formatClaimDate(r.claimed_at)}
               </p>
               {r.word && (
-                <div className="mt-3 flex justify-center">
+                <div className="mt-3 flex flex-wrap justify-center gap-2">
+                  <ShareWordButton word={r.word} owner={profile?.username ?? null} className="inline-flex items-center gap-1.5 rounded-full bg-gold text-bg px-3.5 py-1.5 text-sm font-bold hover:brightness-110 transition" />
                   <DiplomaLink word={r.word} year={r.year} />
                 </div>
               )}

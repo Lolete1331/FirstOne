@@ -1,0 +1,3 @@
+Cormorant Garamond y EB Garamond: SIL Open Font License 1.1 (copiadas de los paquetes @fontsource).
+Se usan para dibujar las imágenes para compartir (/palabra/…/opengraph-image).
+Atkinson Hyperlegible: SIL Open Font License 1.1 (@fontsource), para los @usuarios con números.

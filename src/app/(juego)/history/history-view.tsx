@@ -123,6 +123,14 @@ function WordDetail({ word, onBack }: { word: string; onBack: () => void }) {
       <div className="mt-2 flex flex-wrap items-end gap-x-4 gap-y-2">
         <h2 className="font-display font-black text-5xl sm:text-7xl tracking-tight break-words">{word}</h2>
         {exists.data !== false && <DefinitionButton word={word} className="mb-2" />}
+        {exists.data !== false && (
+          <Link
+            href={`/palabra/${encodeURIComponent(word)}`}
+            className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 text-gold px-3.5 py-1.5 text-sm font-bold hover:bg-gold/20"
+          >
+            📤 Página para compartir
+          </Link>
+        )}
       </div>
       {exists.data === false && <p className="mt-2 text-danger">Esta palabra no está en el diccionario.</p>}
 
