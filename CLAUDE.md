@@ -36,6 +36,8 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
 - **Desplegar**: basta con `git push origin main`. Estado: API de Vercel
   `GET /v6/deployments?teamId=team_PsuN00HeZ1ZXr2XdLGtXCxSB&limit=1&target=production`.
 - **Hacer admin a alguien**: `select public.make_admin('usuario');` (vía la Management API).
+- **Límite personal de palabras/minuto** (general: 10): tabla `user_claim_limits (user_id, per_minute)`.
+  @carolina tiene 20 (decisión del dueño, 15-nov-2026). Quitarlo: `delete from user_claim_limits where user_id = …`.
 - El sandbox no puede abrir firstone.es ni *.vercel.app: verifica con las API o pide al usuario que pruebe.
 
 ## Desarrollo y pruebas
