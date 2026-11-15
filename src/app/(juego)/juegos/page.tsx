@@ -6,7 +6,8 @@ import "@fontsource/eb-garamond/latin-400-italic.css";
 
 export const metadata: Metadata = {
   title: "Juegos de palabras del día",
-  description: "Juegos diarios con las palabras del español: la palabra oculta, ¿qué significa? y la sopa de letras. Gratis y sin descargar nada.",
+  description:
+    "Juegos diarios con las palabras del español: la palabra oculta, ¿qué significa?, sopa de letras, ¿existe o no existe?, anagramas, refranes, la intrusa, ortografía y el ahorcado. Gratis.",
   alternates: { canonical: "/juegos" },
 };
 
@@ -29,6 +30,42 @@ const GAMES = [
     title: "Sopa de letras",
     text: "Una sopa nueva cada día con un tema distinto. Encuentra todas las palabras y descubre qué significan.",
   },
+  {
+    href: "/juegos/existe",
+    icon: "🤔",
+    title: "¿Existe o no existe?",
+    text: "Diez palabras: unas están en el diccionario y otras nos las hemos inventado. ¿Sabes distinguirlas?",
+  },
+  {
+    href: "/juegos/anagramas",
+    icon: "🔀",
+    title: "Anagramas",
+    text: "Siete letras. ¿Cuántas palabras eres capaz de formar con ellas?",
+  },
+  {
+    href: "/juegos/refranes",
+    icon: "🗣️",
+    title: "Refranes",
+    text: "Cinco refranes a medias. ¿Sabes cómo terminan?",
+  },
+  {
+    href: "/juegos/intrusa",
+    icon: "🧩",
+    title: "La intrusa",
+    text: "Cuatro palabras y una que no encaja con las demás.",
+  },
+  {
+    href: "/juegos/b-o-v",
+    icon: "✍️",
+    title: "¿B o V?",
+    text: "Ortografía rápida: b o v, g o j, con h o sin h.",
+  },
+  {
+    href: "/juegos/ahorcado",
+    icon: "🎯",
+    title: "El ahorcado",
+    text: "Tres palabras para adivinar letra a letra, con su tema como pista.",
+  },
 ];
 
 export default function JuegosPage() {
@@ -39,19 +76,19 @@ export default function JuegosPage() {
       <p className="mt-2 text-center font-[family-name:'EB_Garamond'] italic text-lg text-muted">
         Para jugar con el español un ratito al día. Cambian todos a la vez, a medianoche (hora universal).
       </p>
-      <ul className="mt-8 grid gap-4">
+      <ul className="mt-8 grid gap-4 md:grid-cols-2">
         {GAMES.map((g) => (
           <li key={g.href}>
             <Link
               href={g.href}
-              className="group flex items-center gap-4 sm:gap-6 rounded-3xl border-2 border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] p-5 sm:p-7 hover:-translate-y-1 transition-transform"
+              className="group h-full flex items-center gap-4 rounded-3xl border-2 border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] p-5 hover:-translate-y-1 transition-transform"
             >
               <span className="text-4xl sm:text-5xl">{g.icon}</span>
               <div className="flex-1 min-w-0">
-                <h2 className="font-[family-name:'Cormorant_Garamond'] font-bold text-3xl leading-tight">{g.title}</h2>
+                <h2 className="font-[family-name:'Cormorant_Garamond'] font-bold text-2xl sm:text-3xl leading-tight">{g.title}</h2>
                 <p className="mt-1 text-[#4a4a4a] leading-relaxed">{g.text}</p>
               </div>
-              <span className="hidden sm:inline-flex rounded-full bg-[#2b2622] text-[#f7f0e1] font-bold px-5 py-2.5 group-hover:gap-3">Jugar →</span>
+
             </Link>
           </li>
         ))}

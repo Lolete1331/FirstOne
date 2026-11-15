@@ -49,7 +49,7 @@ export default function Home() {
         <span className="font-bold whitespace-nowrap">Jugar →</span>
       </Link>
       <p className="mt-2 text-center text-sm text-muted">
-        <Link href="/juegos" className="underline hover:text-lime">Más juegos de palabras</Link>: ¿qué significa? y sopa de letras
+        <Link href="/juegos" className="underline hover:text-lime">Más juegos de palabras</Link>: sopa de letras, anagramas, refranes y más
       </p>
 
       <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-[1fr_1.2fr] [&>*]:min-w-0">
