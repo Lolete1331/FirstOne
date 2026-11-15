@@ -382,3 +382,8 @@ body {
 .legal table { margin-top: 1rem; width: 100%; font-size: 0.9rem; border-collapse: collapse; }
 .legal th, .legal td { text-align: left; vertical-align: top; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--line); color: var(--muted); }
 .legal th { color: var(--text); }
+
+/* ── La palabra oculta ── */
+.oculta { --cell: min(3.25rem, calc((100vw - 5rem) / 8.6)); }
+@keyframes oculta-shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.oculta-shake { animation: oculta-shake 0.4s; }

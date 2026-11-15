@@ -57,6 +57,11 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   localStorage, voz con speechSynthesis, estrellas solo en el dispositivo. **Sin cuentas ni datos de menores.**
   Las listas de palabras se separan en sílabas a mano y un test comprueba que existen en el diccionario.
 
+- `/palabra-oculta` «La palabra oculta» (adivinar la palabra del día, 4-8 letras, 6 intentos, pista = definición
+  que gasta un intento). **En pruebas: sin enlaces y con noindex.** La palabra la calcula el servidor
+  (`src/lib/oculta/secret.ts`, orden secreto con `HUMAN_COOKIE_SECRET`; lista en `src/lib/oculta/words.ts`), nunca
+  se envía antes de acabar. Con cuenta, intentos en `hidden_word_plays` y aciertos en `hidden_word_solves`
+  (clasificación «los primeros en encontrarla»); sin cuenta, progreso en localStorage. No usar el nombre «Wordle».
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 
