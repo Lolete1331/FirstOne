@@ -43,6 +43,15 @@ describe("Juegos de preguntas", () => {
     }
   });
 
+  it("cada refrán tiene dos finales falsos distintos del bueno", async () => {
+    const { REFRANES_FALSOS } = await import("@/lib/juegos/refranes-falsos");
+    expect(REFRANES_FALSOS.length).toBe(REFRANES.length);
+    REFRANES.forEach(([s, end], i) => {
+      const [a, b] = REFRANES_FALSOS[i];
+      expect(a && b && a !== b && a !== end && b !== end, `${s}: ${a} / ${b}`).toBe(true);
+    });
+  });
+
   it("refranes sin principios ni finales repetidos", () => {
     expect(new Set(REFRANES.map(([s]) => s)).size).toBe(REFRANES.length);
     expect(new Set(REFRANES.map(([, e]) => e)).size).toBe(REFRANES.length);

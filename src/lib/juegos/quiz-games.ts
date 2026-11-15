@@ -9,6 +9,7 @@ import { FAKE_WORDS, REAL_RARE_WORDS } from "./existe-data";
 import { FAKE_WORDS_V1 } from "./existe-v1";
 import { SPELLING_V1 } from "./ortografia-v1";
 import { REFRANES } from "./refranes-data";
+import { REFRANES_FALSOS } from "./refranes-falsos";
 import { SPELLING } from "./ortografia-data";
 import { THEMES } from "./sopa-temas";
 
@@ -88,7 +89,12 @@ export function refranesItems(day: string): QuizItem[] {
   const list = day < V2_FROM ? REFRANES_V1 : REFRANES;
   const today = slice(list, day < V2_FROM ? "refranes" : "refranes-2", day, 5);
   return today.map(([start, end]) => {
-    const others = shuffleWith(list.filter(([s]) => s !== start), rnd).slice(0, 2).map(([, e]) => e);
+    // Desde el 16-nov: dos finales falsos escritos a mano que también «suenan bien».
+    // (El 15-nov, finales de otros refranes al azar.)
+    const others =
+      day < V2_FROM
+        ? shuffleWith(list.filter(([s]) => s !== start), rnd).slice(0, 2).map(([, e]) => e)
+        : [...REFRANES_FALSOS[REFRANES.findIndex(([s]) => s === start)]];
     const options = shuffleWith([end, ...others], rnd);
     return {
       prompt: `«${start}…»`,
