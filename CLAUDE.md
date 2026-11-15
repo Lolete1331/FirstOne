@@ -114,10 +114,10 @@ a las estadísticas (pendiente de decidir).
 
 ## Prioridades (en este orden)
 
-1. **Login por email para todos**: conectar SMTP propio (Resend, gratis 3.000/mes) en Supabase y,
-   con él, la plantilla de correo con código (`supabase/templates/magic_link.html`; el proyecto
-   usa códigos de 8 dígitos → se dejó en 6 con la Management API; la UI acepta 6-8). Ahora solo
-   funciona Google para el público. Necesita que el dueño cree la cuenta de Resend.
+1. ~~Login por email~~ conectado (15-nov): Supabase envía por SMTP de Resend (`smtp.resend.com`, remitente
+   `hola@firstone.es`, dominio verificado en IONOS con registros `resend._domainkey` y `send`). Plantilla en español
+   (`supabase/templates/magic_link.html`, aplicada a magic link y confirmación vía Management API), código de 6 cifras,
+   límite 60 correos/hora. Plan gratuito de Resend: 100 correos/día y 3.000/mes.
 2. **Turnstile** (anti-bots): crear clave en Cloudflare y poner `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y
    `TURNSTILE_SECRET_KEY` en Vercel (el código ya está preparado en `src/lib/human.ts`).
 3. ~~Páginas legales~~ hechas (14-nov-2026); contacto público del proyecto en `LEGAL_CONTACT_EMAIL` (Vercel), también para sugerencias (pie y FAQ).
