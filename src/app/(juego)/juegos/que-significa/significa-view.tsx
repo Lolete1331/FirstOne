@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { BackToGames, PaperCard } from "@/components/juegos/paper";
+import Link from "next/link";
+import { PaperCard } from "@/components/juegos/paper";
+import { ArchiveLinks, type DayBadge } from "@/components/juegos/day-archive";
+import { useDayParam } from "@/lib/hooks/use-day-param";
 import { NextDay } from "@/components/juegos/next-day";
 import type { Quiz } from "@/lib/juegos/significa";
 
@@ -20,7 +23,19 @@ function save(day: string, a: number[]) {
   }
 }
 
+/** Estado guardado de un día, para la lista de anteriores. */
+export function significaStatus(day: string): DayBadge | null {
+  const a = load(day);
+  if (!a.length) return null;
+  return a.length >= 5 ? { text: "✓ Hecho", kind: "done" } : { text: `${a.length} de 5`, kind: "partial" };
+}
+
 export function SignificaView() {
+  const asked = useDayParam();
+  return <SignificaGame key={asked ?? "hoy"} day={asked} />;
+}
+
+function SignificaGame({ day }: { day?: string }) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
   const [current, setCurrent] = useState(0);
@@ -30,7 +45,7 @@ export function SignificaView() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/significa")
+    fetch(day ? `/api/significa?day=${day}` : "/api/significa")
       .then((r) => (r.ok ? (r.json() as Promise<Quiz>) : Promise.reject()))
       .then((q) => {
         if (!active) return;
@@ -44,7 +59,7 @@ export function SignificaView() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [day]);
 
   if (error) return <p className="pt-24 text-center text-muted">Ahora mismo no podemos cargar las palabras. Inténtalo dentro de un rato.</p>;
   if (!quiz) return <p className="pt-24 text-center text-muted">Buscando palabras en el diccionario…</p>;
@@ -80,7 +95,7 @@ export function SignificaView() {
 
   return (
     <div className="pt-6 pb-4 max-w-xl mx-auto">
-      <PaperCard kicker={`N.º ${quiz.number} · Palabras curiosas`} title="¿Qué significa?" subtitle={`${total} palabras · elige la definición correcta`}>
+      <PaperCard kicker={`N.º ${quiz.number} · Palabras curiosas${day ? " · día anterior" : ""}`} title="¿Qué significa?" subtitle={`${total} palabras · elige la definición correcta`}>
         {/* Progreso */}
         <div className="mt-4 flex justify-center gap-2">
           {quiz.questions.map((qq, i) => {
@@ -156,10 +171,16 @@ export function SignificaView() {
           </div>
         )}
         <div className="text-center">
-          <NextDay label="Palabras nuevas" />
+          {day ? (
+            <p className="mt-4 text-sm text-[#6b6256]">
+              Palabras de un día anterior · <Link href="/juegos/que-significa" className="underline">Ir a las de hoy</Link>
+            </p>
+          ) : (
+            <NextDay label="Palabras nuevas" />
+          )}
         </div>
       </PaperCard>
-      <BackToGames />
+      <ArchiveLinks path="/juegos/que-significa" label="Días anteriores" />
     </div>
   );
 }

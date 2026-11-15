@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/palabra-oculta", "daily", 0.9],
     ["/juegos/que-significa", "daily", 0.8],
     ["/juegos/sopa-de-letras", "daily", 0.8],
+    ["/juegos/sopa-de-letras/anteriores", "daily", 0.4],
+    ["/juegos/que-significa/anteriores", "daily", 0.4],
     ["/palabra-oculta/anteriores", "daily", 0.5],
     ["/lectura", "weekly", 0.9],
     ["/lectura/tipos", "monthly", 0.8],

@@ -1,8 +1,11 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DefinitionButton } from "@/components/definition-button";
-import { BackToGames, mmss, PaperCard } from "@/components/juegos/paper";
+import { mmss, PaperCard } from "@/components/juegos/paper";
 import { NextDay } from "@/components/juegos/next-day";
+import { ArchiveLinks, type DayBadge } from "@/components/juegos/day-archive";
+import { useDayParam } from "@/lib/hooks/use-day-param";
+import Link from "next/link";
 import { dayKey } from "@/lib/oculta/game";
 import { generateSopa, lineCells, matchWord, type Cell } from "@/lib/juegos/sopa";
 
@@ -29,16 +32,26 @@ function save(day: string, s: Saved) {
 }
 
 export function SopaView() {
-  const [day, setDay] = useState<string | null>(null);
+  const asked = useDayParam();
+  const [today, setToday] = useState<string | null>(null);
   useEffect(() => {
-    const t = setTimeout(() => setDay(dayKey()), 0);
+    const t = setTimeout(() => setToday(dayKey()), 0);
     return () => clearTimeout(t);
   }, []);
-  if (!day) return <p className="pt-24 text-center text-muted">Cargando…</p>;
-  return <Board day={day} />;
+  if (!today) return <p className="pt-24 text-center text-muted">Cargando…</p>;
+  const day = asked ?? today;
+  return <Board key={day} day={day} isToday={day === today} />;
 }
 
-function Board({ day }: { day: string }) {
+/** Estado guardado de una sopa, para la lista de anteriores. */
+export function sopaStatus(day: string): DayBadge | null {
+  const s = load(day);
+  if (!s.found.length) return null;
+  const total = generateSopa(day).words.length;
+  return s.found.length >= total ? { text: `✓ ${mmss(s.elapsed ?? 0)}`, kind: "done" } : { text: `${s.found.length} de ${total}`, kind: "partial" };
+}
+
+function Board({ day, isToday }: { day: string; isToday: boolean }) {
   const sopa = useMemo(() => generateSopa(day), [day]);
   const [state, setState] = useState<Saved>(() => load(day));
   const [anchor, setAnchor] = useState<Cell | null>(null);
@@ -149,7 +162,7 @@ function Board({ day }: { day: string }) {
   return (
     <div className="pt-6 pb-4 max-w-xl mx-auto">
       <PaperCard
-        kicker={`N.º ${sopa.number} · Sopa de letras`}
+        kicker={`N.º ${sopa.number} · Sopa de letras${isToday ? "" : " · día anterior"}`}
         title={sopa.theme}
         subtitle={<>Encuentra las {sopa.words.length} palabras · arrastra el dedo o toca la primera y la última letra</>}
       >
@@ -221,10 +234,16 @@ function Board({ day }: { day: string }) {
           </div>
         )}
         <div className="text-center">
-          <NextDay label="Nueva sopa" />
+          {isToday ? (
+            <NextDay label="Nueva sopa" />
+          ) : (
+            <p className="mt-4 text-sm text-[#6b6256]">
+              Sopa de un día anterior · <Link href="/juegos/sopa-de-letras" className="underline">Ir a la de hoy</Link>
+            </p>
+          )}
         </div>
       </PaperCard>
-      <BackToGames />
+      <ArchiveLinks path="/juegos/sopa-de-letras" label="Sopas anteriores" />
     </div>
   );
 }
