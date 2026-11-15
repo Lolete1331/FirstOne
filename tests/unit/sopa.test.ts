@@ -10,10 +10,10 @@ const DICT = new Set(
 
 describe("Sopa de letras", () => {
   it("todas las palabras de los temas existen y caben", () => {
-    expect(THEMES.length).toBeGreaterThanOrEqual(30);
+    expect(THEMES.length).toBeGreaterThanOrEqual(60);
     for (const t of THEMES) {
-      expect(new Set(t.words).size, t.name).toBe(t.words.length);
-      for (const w of t.words) {
+      expect(new Set([...t.words, ...t.more]).size, t.name).toBe(t.words.length + t.more.length);
+      for (const w of [...t.words, ...t.more]) {
         expect(DICT.has(w), `${t.name}: ${w}`).toBe(true);
         expect(sopaLetters(w).length, w).toBeLessThanOrEqual(SOPA_SIZE);
       }
@@ -21,7 +21,7 @@ describe("Sopa de letras", () => {
   });
 
   it("cada día sale una sopa válida (y siempre la misma)", () => {
-    for (let i = 0; i < 400; i++) {
+    for (let i = 0; i < 800; i++) {
       const day = new Date(Date.UTC(2026, 10, 15 + i)).toISOString().slice(0, 10);
       const s = generateSopa(day);
       for (const w of s.words) {

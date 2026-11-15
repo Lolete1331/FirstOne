@@ -5,7 +5,9 @@
 import { dayNumber } from "@/lib/oculta/game";
 import { seededRandom, seededShuffle } from "./random";
 import { MEANING_WORDS } from "./significa-palabras";
-import { FAKE_WORDS } from "./existe-data";
+import { FAKE_WORDS, REAL_RARE_WORDS } from "./existe-data";
+import { FAKE_WORDS_V1 } from "./existe-v1";
+import { SPELLING_V1 } from "./ortografia-v1";
 import { REFRANES } from "./refranes-data";
 import { SPELLING } from "./ortografia-data";
 import { THEMES } from "./sopa-temas";
@@ -25,11 +27,19 @@ export type QuizItem = {
   big?: boolean;
 };
 
+/** El 15-nov (primer día) se jugó con las listas de entonces: así no cambia a quien ya lo jugó. */
+const V2_FROM = "2026-11-16";
+
 /** Elementos del día n de una lista barajada una vez (no se repiten hasta agotar la lista). */
 function slice<T>(list: readonly T[], seed: string, day: string, perDay: number): T[] {
-  const order = seededShuffle(list, seed);
   const start = (dayNumber(day) - 1) * perDay;
-  return Array.from({ length: perDay }, (_, i) => order[(((start + i) % order.length) + order.length) % order.length]);
+  return Array.from({ length: perDay }, (_, i) => {
+    // Cada vez que se agota la lista se baraja de otra forma: si algo se repite, sale con otros compañeros.
+    const pos = start + i;
+    const cycle = Math.floor(pos / list.length);
+    const order = seededShuffle(list, cycle ? `${seed}:${cycle}` : seed);
+    return order[((pos % list.length) + list.length) % list.length];
+  });
 }
 
 function shuffleWith<T>(list: T[], rnd: () => number): T[] {
@@ -44,8 +54,9 @@ function shuffleWith<T>(list: T[], rnd: () => number): T[] {
 // ── ¿Existe o no existe? ────────────────────────────────────────────────────
 export function existeItems(day: string): QuizItem[] {
   const rnd = seededRandom(`existe:${day}`);
-  const reals = slice(MEANING_WORDS, "existe-reales", day, 5);
-  const fakes = slice(FAKE_WORDS, "existe-falsas", day, 5);
+  const v1 = day < V2_FROM;
+  const reals = v1 ? slice(MEANING_WORDS, "existe-reales", day, 5) : slice(REAL_RARE_WORDS, "existe-reales-2", day, 5);
+  const fakes = v1 ? slice(FAKE_WORDS_V1, "existe-falsas", day, 5) : slice(FAKE_WORDS, "existe-falsas-2", day, 5);
   const items: QuizItem[] = [
     ...reals.map((w) => ({
       prompt: w,
@@ -69,11 +80,15 @@ export function existeItems(day: string): QuizItem[] {
 }
 
 // ── Refranes ────────────────────────────────────────────────────────────────
+/** El 15-nov había 115 refranes (los primeros de la lista); después se añadieron más. */
+const REFRANES_V1 = REFRANES.slice(0, 115);
+
 export function refranesItems(day: string): QuizItem[] {
   const rnd = seededRandom(`refranes:${day}`);
-  const today = slice(REFRANES, "refranes", day, 5);
+  const list = day < V2_FROM ? REFRANES_V1 : REFRANES;
+  const today = slice(list, day < V2_FROM ? "refranes" : "refranes-2", day, 5);
   return today.map(([start, end]) => {
-    const others = shuffleWith(REFRANES.filter(([s]) => s !== start), rnd).slice(0, 2).map(([, e]) => e);
+    const others = shuffleWith(list.filter(([s]) => s !== start), rnd).slice(0, 2).map(([, e]) => e);
     const options = shuffleWith([end, ...others], rnd);
     return {
       prompt: `«${start}…»`,
@@ -101,14 +116,19 @@ const FAMILY: Record<string, string> = {
 const familyOf = (t: string) => FAMILY[t] ?? t;
 /** Palabras que están en más de un tema (no sirven para la intrusa). */
 const COUNT = new Map<string, number>();
-for (const t of THEMES) for (const w of t.words) COUNT.set(w, (COUNT.get(w) ?? 0) + 1);
-const unique = (words: string[]) => words.filter((w) => COUNT.get(w) === 1);
+for (const t of THEMES) for (const w of [...t.words, ...t.more]) COUNT.set(w, (COUNT.get(w) ?? 0) + 1);
+const COUNT_V1 = new Map<string, number>();
+for (const t of THEMES.slice(0, 40)) for (const w of t.words) COUNT_V1.set(w, (COUNT_V1.get(w) ?? 0) + 1);
+/** Solo los 40 temas originales, que no se solapan entre sí (los nuevos mezclan cosas: «Bosque», «Mar»…). */
+const INTRUSA_THEMES = THEMES.slice(0, 40);
+const uniqueFor = (day: string) => (words: string[]) => words.filter((w) => (day < V2_FROM ? COUNT_V1 : COUNT).get(w) === 1);
 
 export function intrusaItems(day: string): QuizItem[] {
   const rnd = seededRandom(`intrusa:${day}`);
-  const groups = slice(THEMES, "intrusa", day, 5);
+  const unique = uniqueFor(day);
+  const groups = slice(INTRUSA_THEMES, "intrusa", day, 5);
   return groups.map((theme) => {
-    const others = THEMES.filter((t) => familyOf(t.name) !== familyOf(theme.name));
+    const others = INTRUSA_THEMES.filter((t) => familyOf(t.name) !== familyOf(theme.name));
     const odd = others[Math.floor(rnd() * others.length)];
     const three = shuffleWith(unique(theme.words), rnd).slice(0, 3);
     const intruder = shuffleWith(unique(odd.words), rnd)[0];
@@ -125,7 +145,7 @@ export function intrusaItems(day: string): QuizItem[] {
 
 // ── ¿B o V? (ortografía) ────────────────────────────────────────────────────
 export function ortografiaItems(day: string): QuizItem[] {
-  const today = slice(SPELLING, "ortografia", day, 6);
+  const today = day < V2_FROM ? slice(SPELLING_V1, "ortografia", day, 6) : slice(SPELLING, "ortografia-2", day, 6);
   return today.map(([word, pos, kind]) => {
     const letters = [...word];
     const right = kind === "h" ? "Con h" : letters[pos];

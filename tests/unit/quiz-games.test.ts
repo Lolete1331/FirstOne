@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { FAKE_WORDS } from "@/lib/juegos/existe-data";
+import { FAKE_WORDS, REAL_RARE_WORDS } from "@/lib/juegos/existe-data";
+import { FAKE_WORDS_V1 } from "@/lib/juegos/existe-v1";
 import { SPELLING } from "@/lib/juegos/ortografia-data";
+import { SPELLING_V1 } from "@/lib/juegos/ortografia-v1";
+import { HANGMAN_WORDS } from "@/lib/juegos/ahorcado-data";
+import { MEANING_EXTRA } from "@/lib/juegos/significa-extra";
+import { hangmanWords } from "@/lib/juegos/ahorcado";
 import { REFRANES } from "@/lib/juegos/refranes-data";
 import { existeItems, intrusaItems, ortografiaItems, refranesItems } from "@/lib/juegos/quiz-games";
 
@@ -10,16 +15,28 @@ const WORDS = readFileSync(join(process.cwd(), "supabase/data/dictionary.tsv"), 
 const DICT = new Set(WORDS);
 const fold = (w: string) => w.normalize("NFD").replace(/[́̈]/g, "").normalize("NFC");
 const FOLDED = new Set(WORDS.map(fold));
-const days = Array.from({ length: 120 }, (_, i) => new Date(Date.UTC(2026, 10, 15 + i)).toISOString().slice(0, 10));
+// Más de un año de juegos.
+const days = Array.from({ length: 400 }, (_, i) => new Date(Date.UTC(2026, 10, 15 + i)).toISOString().slice(0, 10));
 
 describe("Juegos de preguntas", () => {
-  it("las palabras inventadas no existen (ni sin tildes) y no se repiten", () => {
-    for (const w of FAKE_WORDS) expect(FOLDED.has(w), w).toBe(false);
+  it("las palabras inventadas no existen (ni sin tildes) y no se repiten; las reales sí existen", () => {
+    for (const w of [...FAKE_WORDS, ...FAKE_WORDS_V1]) expect(FOLDED.has(w), w).toBe(false);
     expect(new Set(FAKE_WORDS).size).toBe(FAKE_WORDS.length);
+    for (const w of [...REAL_RARE_WORDS, ...HANGMAN_WORDS, ...MEANING_EXTRA]) expect(DICT.has(w), w).toBe(true);
+  });
+
+  it("hay contenido para más de un año sin repetir", () => {
+    expect(REAL_RARE_WORDS.length / 5).toBeGreaterThan(365);
+    expect(FAKE_WORDS.length / 5).toBeGreaterThan(365);
+    expect(SPELLING.length / 6).toBeGreaterThan(365);
+    expect(HANGMAN_WORDS.length / 3).toBeGreaterThan(365);
+    expect(MEANING_EXTRA.length / 5).toBeGreaterThan(365);
+    const seen = new Set(days.slice(1).flatMap((d) => hangmanWords(d).map((w) => w.word)));
+    expect(seen.size).toBe((days.length - 1) * 3); // ninguna palabra del ahorcado se repite en el año
   });
 
   it("ortografía: la palabra existe y la otra grafía no", () => {
-    for (const [w, pos, kind] of SPELLING) {
+    for (const [w, pos, kind] of [...SPELLING, ...SPELLING_V1]) {
       expect(DICT.has(w), w).toBe(true);
       const alt = kind === "h" ? w.slice(1) : w.slice(0, pos) + ({ b: "v", v: "b", g: "j", j: "g" } as Record<string, string>)[w[pos]] + w.slice(pos + 1);
       expect(DICT.has(alt) || FOLDED.has(fold(alt)), `${w} → ${alt}`).toBe(false);
@@ -48,10 +65,11 @@ describe("Juegos de preguntas", () => {
 
 describe("Anagramas", () => {
   it("cada base de 7 letras da al menos 10 palabras", async () => {
-    const { BASE_WORDS, fitsLetters, points, levelFor } = await import("@/lib/juegos/anagramas");
+    const { BASE_WORDS, fitsLetters, points, levelFor, baseWordFor } = await import("@/lib/juegos/anagramas");
     const folded = [...FOLDED].filter((w) => w.length >= 4 && w.length <= 7);
-    expect(BASE_WORDS.length).toBeGreaterThan(120);
-    for (const b of BASE_WORDS) {
+    expect(BASE_WORDS.length).toBeGreaterThan(365);
+    // Las bases que saldrán el próximo año (comprobarlas todas tardaría demasiado).
+    for (const b of new Set(days.slice(0, 120).map(baseWordFor))) {
       const letters = [...b];
       const n = folded.filter((w) => fitsLetters(w, letters)).length;
       expect(n, b).toBeGreaterThanOrEqual(10);

@@ -8,6 +8,7 @@ import { ArchiveLinks, type DayBadge } from "@/components/juegos/day-archive";
 import { useDayParam } from "@/lib/hooks/use-day-param";
 import { dayKey, dayNumber } from "@/lib/oculta/game";
 import { hangmanLetters, hangmanWords, MAX_MISSES, ROUNDS } from "@/lib/juegos/ahorcado";
+import { maskWord, pickDefinition, shorten } from "@/lib/juegos/significa-text";
 
 const KEYS = ["QWERTYUIOP", "ASDFGHJKLÑ", "ZXCVBNM"];
 type Saved = { guesses: string[][] }; // letras probadas en cada ronda
@@ -108,8 +109,17 @@ function Game({ day, isToday }: { day: string; isToday: boolean }) {
         subtitle={`Tres palabras. Para cada una, ${MAX_MISSES} fallos como mucho.`}
       >
         <p className="mt-3 text-center text-xs uppercase tracking-[0.25em] text-[#8a7a5c]">
-          Palabra {round + 1} de {ROUNDS} · Tema: <b className="text-[#2b2622]">{current.theme}</b>
+          Palabra {round + 1} de {ROUNDS}
+          {current.theme ? (
+            <>
+              {" "}
+              · Tema: <b className="text-[#2b2622]">{current.theme}</b>
+            </>
+          ) : (
+            ` · ${rs.letters.length} letras`
+          )}
         </p>
+        {!current.theme && !rs.over && <Hint key={current.word} word={current.word} />}
         <Gallows misses={rs.misses} />
         <p className="mt-3 text-center font-[family-name:'Cormorant_Garamond'] font-bold text-4xl tracking-[0.3em]">
           {rs.letters.map((l, i) => (guessed.includes(l) || rs.over ? <span key={i} className={!guessed.includes(l) ? "text-[#8c2f39]" : ""}>{[...current.word.toLocaleUpperCase("es")][i]}</span> : <span key={i}>_</span>))}
@@ -177,6 +187,42 @@ function Game({ day, isToday }: { day: string; isToday: boolean }) {
       </PaperCard>
       <ArchiveLinks path="/juegos/ahorcado" label="Días anteriores" />
     </div>
+  );
+}
+
+/** Pista opcional: la definición de la palabra (Wikcionario), sin la propia palabra. */
+function Hint({ word }: { word: string }) {
+  const [text, setText] = useState<string | null>(null);
+  const [state, setState] = useState<"idle" | "loading" | "none">("idle");
+  const ask = async () => {
+    setState("loading");
+    try {
+      const r = await fetch(`/api/define?word=${encodeURIComponent(word)}`);
+      const d = (await r.json()) as { groups?: { senses: { text: string }[] }[] };
+      const def = pickDefinition((d.groups ?? []).flatMap((g) => g.senses.map((s) => s.text)), word);
+      if (def) setText(shorten(maskWord(def, word), 160));
+      else setState("none");
+    } catch {
+      setState("none");
+    }
+  };
+  if (text)
+    return (
+      <p className="mt-2 rounded-xl border border-[#d9c9a3] bg-white/60 px-4 py-2 text-center font-[family-name:'EB_Garamond'] text-[17px] leading-snug">
+        <span className="text-[11px] uppercase tracking-[0.2em] text-[#8a7a5c]">Pista · </span>
+        {text}
+      </p>
+    );
+  return (
+    <p className="mt-2 text-center">
+      {state === "none" ? (
+        <span className="text-sm text-[#8a7a5c]">Esta palabra no tiene pista. ¡Suerte!</span>
+      ) : (
+        <button onClick={ask} disabled={state === "loading"} className="text-sm underline underline-offset-4 text-[#6b6256]">
+          {state === "loading" ? "Buscando…" : "💡 ¿Una pista? Ver su definición"}
+        </button>
+      )}
+    </p>
   );
 }
 

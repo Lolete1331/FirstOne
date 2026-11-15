@@ -4,13 +4,15 @@ import { lookupDefinition } from "@/lib/words/lookup";
 import { wiktionaryUrl } from "@/lib/words/definitions";
 import { seededRandom, seededShuffle } from "./random";
 import { MEANING_WORDS } from "./significa-palabras";
+import { MEANING_EXTRA } from "./significa-extra";
 import { maskWord, pickDefinition, shorten } from "./significa-text";
 
 export const QUESTIONS_PER_DAY = 5;
 export type Question = { word: string; options: string[]; answer: number; full: string; sourceUrl: string };
 export type Quiz = { day: string; number: number; questions: Question[] };
 
-const ORDER = seededShuffle(MEANING_WORDS, "que-significa");
+/** Primero las 463 curiosas elegidas a mano; después, 2.400 palabras poco usadas (más de un año en total). */
+const ORDER = [...seededShuffle(MEANING_WORDS, "que-significa"), ...seededShuffle(MEANING_EXTRA, "que-significa-2")];
 const cache = new Map<string, Quiz>();
 
 async function definitionOf(word: string): Promise<string | null> {

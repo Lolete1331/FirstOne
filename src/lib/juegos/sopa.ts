@@ -33,31 +33,44 @@ export function sopaLetters(word: string): string {
     .replace(/[ÚÙÛÜ]/g, "U");
 }
 
+/** Tema del día. El 15-nov se usaban solo los 40 temas originales; desde el 16-nov, todos. */
 export function themeFor(day: string) {
-  const order = seededShuffle(THEMES, "sopa-temas");
+  const order = day < DIAGONAL_FROM ? seededShuffle(THEMES.slice(0, 40), "sopa-temas") : seededShuffle(THEMES, "sopa-temas-2");
   const n = dayNumber(day);
   return order[(((n - 1) % order.length) + order.length) % order.length];
+}
+
+export const WORDS_PER_SOPA = 8;
+
+/** Palabras de la sopa del día: desde el 16-nov, 8 elegidas entre todas las del tema. */
+export function wordsFor(day: string, retry = 0): string[] {
+  const t = themeFor(day);
+  if (day < DIAGONAL_FROM) return t.words;
+  // Si con unas palabras no cabe (muchas largas), se prueba con otra selección del mismo tema.
+  return seededShuffle([...t.words, ...t.more], retry ? `sopa-palabras:${day}:${retry}` : `sopa-palabras:${day}`).slice(0, WORDS_PER_SOPA);
 }
 
 export function generateSopa(day: string): Sopa {
   const theme = themeFor(day);
   const size = SOPA_SIZE;
-  for (let attempt = 0; attempt < 50; attempt++) {
+  for (let attempt = 0; attempt < 120; attempt++) {
     const rnd = seededRandom(`sopa:${day}:${attempt}`);
     const grid: string[][] = Array.from({ length: size }, () => Array<string>(size).fill(""));
     const words: PlacedWord[] = [];
-    const sorted = [...theme.words].sort((a, b) => sopaLetters(b).length - sopaLetters(a).length);
+    const sorted = [...wordsFor(day, Math.floor(attempt / 30))].sort((a, b) => sopaLetters(b).length - sopaLetters(a).length);
     let ok = true;
     const hard = day >= DIAGONAL_FROM;
     // Antes: direcciones al azar entre las seis de siempre. Ahora: al menos 3 palabras en diagonal
     // y el resto, mitad y mitad.
     const oldDirs: Cell[] = [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0]];
-    const diagonalSlots = new Set(seededShuffle(sorted.map((_, i) => i), `sopa-diag:${day}:${attempt}`).slice(0, MIN_DIAGONAL));
+    // Las diagonales obligatorias, mejor en palabras no muy largas (las de 9-10 letras casi no caben).
+    const shortIdx = sorted.map((w, i) => [w, i] as const).filter(([w]) => sopaLetters(w).length <= 8).map(([, i]) => i);
+    const diagonalSlots = new Set(seededShuffle(shortIdx.length >= MIN_DIAGONAL ? shortIdx : sorted.map((_, i) => i), `sopa-diag:${day}:${attempt}`).slice(0, MIN_DIAGONAL));
     for (const [wi, word] of sorted.entries()) {
       const letters = [...sopaLetters(word)];
       const dirs = !hard ? oldDirs : diagonalSlots.has(wi) ? DIAGONAL : [...STRAIGHT, ...DIAGONAL];
       let placed: Cell[] | null = null;
-      for (let t = 0; t < 300 && !placed; t++) {
+      for (let t = 0; t < 600 && !placed; t++) {
         const [dr, dc] = dirs[Math.floor(rnd() * dirs.length)];
         const r0 = Math.floor(rnd() * size);
         const c0 = Math.floor(rnd() * size);

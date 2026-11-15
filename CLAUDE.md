@@ -72,6 +72,10 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   (temas de la sopa con familias), `/juegos/b-o-v` (ortografía, `ortografia-data.ts`) — los cuatro con el componente
   `src/components/juegos/daily-quiz.tsx` y `src/lib/juegos/quiz-games.ts` —, `/juegos/anagramas` (API `/api/anagramas`,
   función SQL `anagram_candidates`) y `/juegos/ahorcado`. Tests de datos en `tests/unit/quiz-games.test.ts`.
+  **Contenido para más de un año** (desde el 16-nov): listas generadas con `tools/juegos/generar-datos.py`
+  (diccionario + frecuencias de `wordfreq`, filtro de palabras malsonantes). Los juegos del 15-nov usan las listas
+  «v1» (`existe-v1.ts`, `ortografia-v1.ts`, primeros 40 temas, primeros 115 refranes) para no cambiar a mitad de día.
+  Sopa: 62 temas (`words` + `more`, 8 palabras al día). Refranes: 223 (se repiten cada ~45 días, rebarajados).
   Días anteriores en `/juegos/<juego>/anteriores` y `?dia=AAAA-MM-DD` (componente `src/components/juegos/day-archive.tsx`).
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.

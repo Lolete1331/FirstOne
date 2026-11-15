@@ -3,19 +3,23 @@ import { dayNumber, foldWord } from "@/lib/oculta/game";
 import { seededRandom, seededShuffle } from "./random";
 import { MEANING_WORDS } from "./significa-palabras";
 import { THEMES } from "./sopa-temas";
+import { ANAGRAM_BASES } from "./anagramas-data";
 
 export const MIN_LEN = 4;
 
 /** Con estas letras salen menos de 10 palabras: no son divertidas. */
 const FEW_SOLUTIONS = new Set(["cachaza", "desidia", "endeble", "ensueño", "ganapan", "gurruño", "hechizo", "idilico", "manzana", "perenne", "pomposo", "sinuoso", "susurro"]);
 
-/** Palabras de 7 letras (sin tildes, sin repetir letras raras) para elegir las letras del día. */
-export const BASE_WORDS: string[] = [...new Set([...THEMES.flatMap((t) => t.words), ...MEANING_WORDS].map(foldWord))]
+/** Versión 1 (solo el 15-nov): palabras de 7 letras de los temas y de «¿Qué significa?». */
+const BASE_WORDS_V1: string[] = [...new Set([...THEMES.slice(0, 40).flatMap((t) => t.words), ...MEANING_WORDS].map(foldWord))]
   .filter((w) => [...w].length === 7 && !FEW_SOLUTIONS.has(w))
   .sort();
 
+/** Desde el 16-nov: palabras comunes de 7 letras que dan 15 palabras o más (más de 4 años sin repetir). */
+export const BASE_WORDS: readonly string[] = ANAGRAM_BASES;
+
 export function baseWordFor(day: string): string {
-  const order = seededShuffle(BASE_WORDS, "anagramas");
+  const order = day < "2026-11-16" ? seededShuffle(BASE_WORDS_V1, "anagramas") : seededShuffle(BASE_WORDS, "anagramas-2");
   return order[(((dayNumber(day) - 1) % order.length) + order.length) % order.length];
 }
 
