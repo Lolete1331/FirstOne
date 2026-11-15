@@ -15,6 +15,8 @@ type Overview = {
   claims_today: number;
   attempts_last_hour: number;
   users_total: number;
+  users_played: number;
+  signups_incomplete: number;
   users_today: number;
   users_banned: number;
   hidden_words: number;
@@ -84,13 +86,15 @@ function Panel({ myId }: { myId: string }) {
       </PageTitle>
 
       {/* Métricas */}
-      <section className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+      <section className="mt-6 grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
           ["Reclamaciones/min", o?.claims_last_minute, "text-lime"],
           ["Última hora", o?.claims_last_hour, ""],
           ["Hoy", o?.claims_today, ""],
           ["Intentos última hora", o?.attempts_last_hour, "text-muted"],
-          ["Usuarios", o?.users_total, "text-cyan"],
+          ["Usuarios (con @usuario)", o?.users_total, "text-cyan"],
+          ["Han jugado (≥1 palabra)", o?.users_played, "text-cyan"],
+          ["Registro sin terminar", o?.signups_incomplete, "text-muted"],
           ["Nuevos hoy", o?.users_today, ""],
           ["Bloqueados", o?.users_banned, "text-danger"],
           ["Palabras ocultas", o?.hidden_words, "text-pink"],
