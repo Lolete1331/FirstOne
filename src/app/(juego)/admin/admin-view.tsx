@@ -6,7 +6,7 @@ import { useRpc } from "@/lib/hooks/use-rpc";
 import { getSupabase } from "@/lib/supabase/client";
 import { Empty, PageTitle, Skeleton } from "@/components/ui";
 import { countryFlag } from "@/lib/countries";
-import { currentGameYear, formatClaimDate, timeAgo } from "@/lib/time/year";
+import { currentGameYear, timeAgo } from "@/lib/time/year";
 import { normalizeWord } from "@/lib/words/normalize";
 
 type Overview = {
@@ -30,7 +30,20 @@ type UserRow = {
   ban_reason: string | null;
   medals: number;
   words: number;
+  last_claim_at: string | null;
+  total: number;
 };
+
+const SORTS = [
+  ["recientes", "Más recientes"],
+  ["actividad", "Jugaron hace menos"],
+  ["palabras", "Más palabras"],
+  ["medallas", "Más medallas"],
+  ["alfabetico", "Alfabético"],
+  ["bloqueados", "Bloqueados primero"],
+] as const;
+type Sort = (typeof SORTS)[number][0];
+const PAGE = 50;
 type ClaimRow = { word: string; year: number; position: number; claimed_at: string; total: number };
 type LogRow = { id: number; admin: string | null; action: string; target: string | null; details: Record<string, unknown> | null; created_at: string };
 
@@ -139,8 +152,11 @@ function Panel({ myId }: { myId: string }) {
 function Users({ myId, onChange }: { myId: string; onChange: () => void }) {
   const [q, setQ] = useState("");
   const [query, setQuery] = useState("");
-  const users = useRpc<UserRow[]>("admin_search_users", { p_query: query, p_limit: 30 });
+  const [sort, setSort] = useState<Sort>("recientes");
+  const [limit, setLimit] = useState(PAGE);
+  const users = useRpc<UserRow[]>("admin_list_users", { p_query: query, p_sort: sort, p_limit: limit });
   const [open, setOpen] = useState<string | null>(null);
+  const total = users.data?.[0]?.total ?? 0;
 
   return (
     <section className="card p-4">
@@ -149,6 +165,7 @@ function Users({ myId, onChange }: { myId: string; onChange: () => void }) {
         onSubmit={(e) => {
           e.preventDefault();
           setQuery(q.trim().replace(/^@/, ""));
+          setLimit(PAGE);
         }}
         className="mt-3 flex gap-2"
       >
@@ -160,6 +177,27 @@ function Users({ myId, onChange }: { myId: string; onChange: () => void }) {
         />
         <button className="rounded-xl bg-lime text-bg font-bold px-4">Buscar</button>
       </form>
+      <div className="mt-2 flex items-center gap-2 text-sm">
+        <label htmlFor="admin-sort" className="text-muted">Ordenar:</label>
+        <select
+          id="admin-sort"
+          value={sort}
+          onChange={(e) => {
+            setSort(e.target.value as Sort);
+            setLimit(PAGE);
+          }}
+          className="flex-1 min-w-0 rounded-xl bg-surface-2 border border-line px-3 py-2 outline-none focus:border-lime/70"
+        >
+          {SORTS.map(([value, label]) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
+      </div>
+      {users.data && users.data.length > 0 && (
+        <p className="mt-2 text-xs text-muted">
+          Mostrando {users.data.length} de {Number(total).toLocaleString("es")} {query ? `que contienen «${query}»` : "usuarios"}
+        </p>
+      )}
       {users.loading && !users.data ? (
         <div className="mt-3"><Skeleton rows={4} /></div>
       ) : !users.data?.length ? (
@@ -180,6 +218,15 @@ function Users({ myId, onChange }: { myId: string; onChange: () => void }) {
             />
           ))}
         </ul>
+      )}
+      {users.data && users.data.length < total && (
+        <button
+          onClick={() => setLimit(limit + PAGE)}
+          disabled={users.loading}
+          className="mt-3 w-full rounded-xl border border-line py-2 text-sm hover:border-lime/60 disabled:opacity-50"
+        >
+          {users.loading ? "Cargando…" : `Ver ${Math.min(PAGE, total - users.data.length)} más`}
+        </button>
       )}
     </section>
   );
@@ -209,7 +256,7 @@ function UserItem({ u, isMe, open, onToggle, onChange }: { u: UserRow; isMe: boo
             {u.banned_at && <span className="ml-2 text-[10px] uppercase text-danger">bloqueado</span>}
           </p>
           <p className="text-xs text-muted">
-            {u.medals} 🥇 · {u.words} palabras · desde {formatClaimDate(u.created_at, { withYear: true }).split(" a las")[0]}
+            {u.medals} 🥇 · {u.words} palabras · se unió {timeAgo(u.created_at)} · {u.last_claim_at ? `jugó ${timeAgo(u.last_claim_at)}` : "aún no ha jugado"}
             {u.ban_reason && ` · motivo: ${u.ban_reason}`}
           </p>
         </button>
