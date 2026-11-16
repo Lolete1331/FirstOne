@@ -11,6 +11,9 @@ export const MADRINA = {
   ],
 };
 
+/** Dónde comprar un libro: Todos tus libros (librerías independientes de España), buscando por ISBN. */
+export const buyUrl = (isbn: string) => `https://www.todostuslibros.com/busquedas?keyword=${isbn.replace(/-/g, "")}`;
+
 export const PRESS = [
   {
     outlet: "El País",

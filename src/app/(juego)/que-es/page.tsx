@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LEGAL } from "@/lib/legal";
-import { MADRINA, PRESS } from "@/lib/press";
+import { buyUrl, MADRINA, PRESS } from "@/lib/press";
 import "@fontsource/cormorant-garamond/latin-700.css";
 import "@fontsource/eb-garamond/latin-400.css";
 import "@fontsource/eb-garamond/latin-400-italic.css";
@@ -113,11 +113,21 @@ export default function QueEsPage() {
         <ul className="mt-3 space-y-1.5 font-[family-name:'EB_Garamond'] text-[18px]">
           {MADRINA.books.map((b) => (
             <li key={b.isbn}>
-              📖 <i>{b.title}</i> <span className="text-[#6b6256]">({b.publisher})</span>
+              📖{" "}
+              <a href={buyUrl(b.isbn)} target="_blank" rel="noopener noreferrer" className="underline decoration-[#b08a2e] underline-offset-2">
+                <i>{b.title}</i>
+              </a>{" "}
+              <span className="text-[#6b6256]">({b.publisher})</span>{" "}
+              <a href={buyUrl(b.isbn)} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-sm font-bold text-[#8a6d22]">
+                Comprar →
+              </a>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-sm text-[#6b6256]">¿Te gustan? Pide que los compren en tu biblioteca: es una forma preciosa de apoyar a quien divulga.</p>
+        <p className="mt-3 text-sm text-[#6b6256]">
+          Los enlaces llevan a Todos tus libros, la web de las librerías independientes: allí ves en qué librería cercana está cada
+          libro. Y si te gustan, pide que los compren en tu biblioteca: es una forma preciosa de apoyar a quien divulga.
+        </p>
       </section>
 
       <section id="prensa" className="mt-8 scroll-mt-24">
