@@ -135,8 +135,10 @@ a las estadísticas (pendiente de decidir).
    lectura) que avisa al móvil si BD ≥70 %, correos ≥70/día, pico ≥300 palabras/min, ≥500 cuentas/día, despliegue
    en error o tokens caducados. Además, «Resumen diario de FirstOne» (22:03 Madrid, aviso al móvil siempre): cuentas
    nuevas y quiénes, palabras, partidas, grupos, jugador más activo. Supabase gratis: ≈200 conexiones realtime, 500 MB, 50.000 MAU.
-5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
-   El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
+5. ~~Aspecto «de diccionario»~~ hecho (16-nov): estilo clásico POR DEFECTO (`<html data-theme="clasico">`, colores y
+   letras en `globals.css` bajo `[data-theme="clasico"]`), con botón 🎨 en la cabecera, la portada y los pies para
+   cambiar al moderno (`src/components/theme-toggle.tsx`, se guarda en localStorage `fo-theme`). La sección de lectura
+   (`.lx-root`) conserva sus letras para dislexia.
 6. ~~Imagen para compartir~~ hecha (15-nov): `/palabra/…` con tarjeta para redes.
 7. Palabra del día · ~~8. Página pública por palabra~~ hecha · ~~rachas~~ hechas (con insignias y grupos).
 

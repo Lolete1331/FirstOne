@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { NAV_ITEMS } from "./nav-items";
 import { useAuth } from "./auth-provider";
 import { CountdownChip } from "./countdown";
+import { ThemeToggle } from "./theme-toggle";
 import { countryFlag } from "@/lib/countries";
 import { useHydrated } from "@/lib/hooks/use-hydrated";
 
@@ -62,6 +63,7 @@ export function Header() {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <CountdownChip />
           {loading ? (
             <span className="size-9 rounded-full bg-surface-2 animate-pulse" />

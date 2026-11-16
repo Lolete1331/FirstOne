@@ -412,12 +412,13 @@ body {
   font-variant-numeric: lining-nums;
   font-feature-settings: "lnum" 1;
 }
-[data-theme="clasico"] * {
+[data-theme="clasico"] *:not(.lx-root *) {
   font-variant-numeric: lining-nums;
 }
-[data-theme="clasico"] .font-display,
-[data-theme="clasico"] h1,
-[data-theme="clasico"] h2 {
+/* (La sección de lectura, .lx-root, mantiene sus letras para dislexia: no se toca.) */
+[data-theme="clasico"] .font-display:not(.lx-root *),
+[data-theme="clasico"] h1:not(.lx-root *),
+[data-theme="clasico"] h2:not(.lx-root *) {
   font-family: "Cormorant Garamond", Georgia, serif;
   letter-spacing: 0 !important;
 }

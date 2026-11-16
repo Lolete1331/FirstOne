@@ -3,6 +3,7 @@ import Link from "next/link";
 import "@fontsource/cormorant-garamond/latin-700.css";
 import "@fontsource/eb-garamond/latin-400-italic.css";
 import { PressBand } from "@/components/press-band";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { LegalLinks } from "@/components/legal/legal-links";
 import { LEGAL } from "@/lib/legal";
 
@@ -17,6 +18,9 @@ export default function Portada() {
     <>
       <div className="fo-backdrop" aria-hidden />
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-10 sm:py-16 flex flex-col">
+        <div className="flex justify-end -mt-4 mb-2">
+          <ThemeToggle />
+        </div>
         <div className="flex items-center justify-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icon.svg" alt="" width={52} height={52} className="size-[52px]" />

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 /** Enlaces a las páginas legales (y, si se pasa el email, a «Sugerencias») para los pies de página. */
 export function LegalLinks({ className = "", email }: { className?: string; email?: string | null }) {
@@ -12,6 +13,7 @@ export function LegalLinks({ className = "", email }: { className?: string; emai
       <Link href="/privacidad" className="hover:underline">Privacidad</Link>
       <Link href="/aviso-legal" className="hover:underline">Aviso legal</Link>
       <Link href="/cookies" className="hover:underline">Cookies</Link>
+      <ThemeToggle variant="link" />
     </span>
   );
 }

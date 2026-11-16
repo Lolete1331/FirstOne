@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07060b",
+  themeColor: "#f3ead8",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -51,7 +51,20 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${unbounded.variable} ${grotesk.variable} ${jetbrains.variable} h-full antialiased`}>
+    <html
+      lang="es"
+      data-theme="clasico"
+      suppressHydrationWarning
+      className={`${unbounded.variable} ${grotesk.variable} ${jetbrains.variable} h-full antialiased`}
+    >
+      <head>
+        {/* Estilo elegido por el jugador (clásico por defecto), antes de pintar nada para que no parpadee. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("fo-theme");if(t==="moderno"||t==="clasico"){document.documentElement.dataset.theme=t;}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <AuthProvider>{children}</AuthProvider>
         {/* Contador de visitas anónimo y sin cookies (Vercel Web Analytics). */}
