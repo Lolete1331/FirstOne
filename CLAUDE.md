@@ -129,7 +129,8 @@ a las estadísticas (pendiente de decidir).
 3. ~~Páginas legales~~ hechas (14-nov-2026); contacto público del proyecto en `LEGAL_CONTACT_EMAIL` (Vercel), también para sugerencias (pie y FAQ).
 4. Vigilar límites: tarea programada diaria «Vigilar límites de FirstOne» (21:13 hora de Madrid, sesión nueva, solo
    lectura) que avisa al móvil si BD ≥70 %, correos ≥70/día, pico ≥300 palabras/min, ≥500 cuentas/día, despliegue
-   en error o tokens caducados. Supabase gratis: ≈200 conexiones realtime, 500 MB, 50.000 MAU.
+   en error o tokens caducados. Además, «Resumen diario de FirstOne» (22:03 Madrid, aviso al móvil siempre): cuentas
+   nuevas y quiénes, palabras, partidas, grupos, jugador más activo. Supabase gratis: ≈200 conexiones realtime, 500 MB, 50.000 MAU.
 5. **Aspecto «de diccionario»** (papel, tipografía clásica), quizá como «modo clásico» primero.
    El diploma (Cormorant/EB Garamond, crema y dorado) es la referencia de estilo.
 6. ~~Imagen para compartir~~ hecha (15-nov): `/palabra/…` con tarjeta para redes.
