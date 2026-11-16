@@ -11,6 +11,7 @@ import { raeUrl, wiktionaryUrl } from "@/lib/words/definitions";
 import { countryFlag } from "@/lib/countries";
 import { Logo } from "@/components/header";
 import { ShareWordButton } from "@/components/share-word-button";
+import { WORD_NOTES } from "@/lib/press";
 
 type Props = { params: Promise<{ palabra: string }> };
 const fmt = (n: number) => n.toLocaleString("es");
@@ -69,6 +70,14 @@ async function WordContent({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <p className="text-[11px] uppercase tracking-[0.3em] text-[#8a7a5c]">FirstOne · {year}</p>
       <h1 className="mt-2 font-[family-name:'Cormorant_Garamond'] font-bold text-6xl sm:text-7xl break-words">«{info.word}»</h1>
+      {WORD_NOTES[info.word] && (
+        <div className="mt-4 rounded-2xl border border-[#b08a2e]/60 bg-white/70 px-4 py-3 font-[family-name:'EB_Garamond'] text-[17px]">
+          ✨ {WORD_NOTES[info.word].text}{" "}
+          <a href={WORD_NOTES[info.word].url} target="_blank" rel="noopener noreferrer" className="underline text-[#8a6d22]">
+            {WORD_NOTES[info.word].linkText}
+          </a>
+        </div>
+      )}
 
       {now ? (
         <>

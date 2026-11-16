@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "@fontsource/cormorant-garamond/latin-700.css";
+import "@fontsource/eb-garamond/latin-400-italic.css";
+import { PressBand } from "@/components/press-band";
 import { LegalLinks } from "@/components/legal/legal-links";
 import { LEGAL } from "@/lib/legal";
 
@@ -22,7 +24,10 @@ export default function Portada() {
             First<span className="text-gradient">One</span>
           </span>
         </div>
-        <h1 className="mt-8 text-center font-display font-black text-3xl sm:text-5xl leading-tight tracking-tight">
+        <div className="mt-8">
+          <PressBand />
+        </div>
+        <h1 className="mt-10 text-center font-display font-black text-3xl sm:text-5xl leading-tight tracking-tight">
           ¿Qué te apetece hoy?
         </h1>
         <p className="mt-3 text-center text-muted">Elige una opción para empezar.</p>

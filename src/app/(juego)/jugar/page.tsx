@@ -5,6 +5,7 @@ import { CountdownBig } from "@/components/countdown";
 import { HomeFeed } from "@/components/home-feed";
 import { SetupNotice } from "@/components/setup-notice";
 import "@fontsource/cormorant-garamond/latin-700.css";
+import { PressBand } from "@/components/press-band";
 
 export const metadata: Metadata = {
   title: "Jugar: sé el primero en escribir cada palabra",
@@ -37,9 +38,13 @@ export default function Home() {
         Si eres la primera persona del mundo en escribirla este año, es tuya 🥇. El 1 de enero todo vuelve a empezar.
       </p>
 
+      <div className="mt-6">
+        <PressBand compact />
+      </div>
+
       <Link
         href="/palabra-oculta"
-        className="mt-6 flex items-center gap-4 rounded-2xl border border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] px-5 py-4 hover:-translate-y-0.5 transition-transform"
+        className="mt-3 flex items-center gap-4 rounded-2xl border border-[#d9c9a3] bg-[#f7f0e1] text-[#2b2622] px-5 py-4 hover:-translate-y-0.5 transition-transform"
       >
         <span className="text-3xl">🔎</span>
         <span className="flex-1 min-w-0">

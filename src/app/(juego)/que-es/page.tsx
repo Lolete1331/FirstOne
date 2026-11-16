@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LEGAL } from "@/lib/legal";
+import { MADRINA, PRESS } from "@/lib/press";
+import "@fontsource/cormorant-garamond/latin-700.css";
+import "@fontsource/eb-garamond/latin-400.css";
+import "@fontsource/eb-garamond/latin-400-italic.css";
 
 export const metadata: Metadata = {
   title: "Qué es FirstOne y cómo se juega",
@@ -44,7 +48,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "¿Quién ha creado FirstOne?",
-    a: "FirstOne lo han creado Diego y Álex, dos estudiantes de 18 años de Navarra (España). Puedes seguir el proyecto en TikTok como @firstone.es.",
+    a: "FirstOne lo han creado Diego y Álex, dos estudiantes de 18 años de Navarra (España). Su madrina es Lola Pons, catedrática de Lengua Española de la Universidad de Sevilla, que escribió sobre el juego en El País. Puedes seguir el proyecto en TikTok como @firstone.es.",
   },
   ...(LEGAL.contactEmail
     ? [
@@ -97,6 +101,42 @@ export default function QueEsPage() {
       <Link href="/jugar" className="mt-6 inline-block rounded-full bg-lime text-bg font-display font-black px-7 py-3 glow-lime">
         Reclamar mi primera palabra
       </Link>
+
+      <section id="madrina" className="mt-12 scroll-mt-24 rounded-3xl border-2 border-[#b08a2e]/70 bg-[#f7f0e1] text-[#2b2622] px-5 py-6 sm:px-8">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[#8a7a5c]">Nuestra madrina</p>
+        <h2 className="mt-1 font-[family-name:'Cormorant_Garamond'] font-bold text-3xl sm:text-4xl">{MADRINA.name}</h2>
+        <p className="mt-1 font-[family-name:'EB_Garamond'] italic text-lg text-[#6b6256]">{MADRINA.role}</p>
+        <p className="mt-3 font-[family-name:'EB_Garamond'] text-[18px] leading-relaxed">
+          Lola Pons conoció FirstOne en sus primeros días, escribió sobre él en su columna de El País y aceptó ser su madrina. Sus libros
+          de divulgación cuentan la historia del español de una forma que engancha:
+        </p>
+        <ul className="mt-3 space-y-1.5 font-[family-name:'EB_Garamond'] text-[18px]">
+          {MADRINA.books.map((b) => (
+            <li key={b.isbn}>
+              📖 <i>{b.title}</i> <span className="text-[#6b6256]">({b.publisher})</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-sm text-[#6b6256]">¿Te gustan? Pide que los compren en tu biblioteca: es una forma preciosa de apoyar a quien divulga.</p>
+      </section>
+
+      <section id="prensa" className="mt-8 scroll-mt-24">
+        <h2 className="font-display font-bold text-2xl">Han hablado de nosotros</h2>
+        <ul className="mt-4 space-y-3">
+          {PRESS.map((a) => (
+            <li key={a.url}>
+              <a href={a.url} target="_blank" rel="noopener noreferrer" className="card block p-5 hover:border-lime/60">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted">
+                  {a.outlet} · {a.date}
+                </p>
+                <p className="mt-1 font-display font-bold text-lg">«{a.title}», por {a.author}</p>
+                <p className="mt-2 text-muted italic">«{a.quote}»</p>
+                <p className="mt-2 text-sm text-lime">Leer el artículo →</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <h2 className="mt-12 font-display font-bold text-2xl">Preguntas frecuentes</h2>
       <div className="mt-4 space-y-3">

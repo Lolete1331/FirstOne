@@ -112,6 +112,10 @@ dice ««palabra» es de @usuario» (para compartir capturas), portada con dos o
 dislexia `/lectura`, SEO (sitemap, robots, Open Graph, `/que-es` con FAQ, `llms.txt`), app
 instalable (manifest), logo y kit de marca en `brand/`.
 
+Madrina: **Lola Pons** (aceptó el 16-nov-2026 que se la mencione como madrina y que se enlace su columna de El País
+«¿Quiénes son ustedes?», 14-nov-2026). Datos en `src/lib/press/index.ts`; franja `PressBand` en la portada y en /jugar,
+apartados «Nuestra madrina» y «Han hablado de nosotros» en /que-es, nota especial en /palabra/suscriptor.
+
 Marketing: TikTok **@firstone.es**. Vídeos hechos con `tools/video/` (anuncio de 22 s y tutorial
 completo de ~2 min con subtítulos quemados). Una lingüista de prestigio apoya el proyecto y lo va a
 difundir; sus sugerencias (diploma, quitar el anglicismo «Stats», mostrar el @usuario) ya están
