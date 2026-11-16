@@ -387,3 +387,70 @@ body {
 .oculta { --cell: min(3.25rem, calc((100vw - 5rem) / 8.6)); }
 @keyframes oculta-shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 .oculta-shake { animation: oculta-shake 0.4s; }
+
+/* ───────────── Estilo «de diccionario» (papel, tinta y dorado) ─────────────
+   Se activa con <html data-theme="clasico">. Mismos nombres de colores: toda la web cambia a la vez. */
+[data-theme="clasico"] {
+  --bg: #f3ead8;
+  --surface: #fbf6ea;
+  --surface-2: #efe4cc;
+  --line: rgb(43 38 34 / 0.14);
+  --text: #2b2622;
+  --muted: #6b6256;
+  --lime: #2b2622;     /* botones principales: tinta */
+  --pink: #8c2f39;     /* burdeos */
+  --cyan: #3e5c76;     /* azul tinta */
+  --violet: #5a4a7a;
+  --gold: #b08a2e;     /* dorado del diploma */
+  --danger: #a3312f;
+  color-scheme: light;
+}
+[data-theme="clasico"] body {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.06rem;
+  /* Números «de imprenta» (1 2 3 a la misma altura): con los antiguos, el 1 parece una I */
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum" 1;
+}
+[data-theme="clasico"] * {
+  font-variant-numeric: lining-nums;
+}
+[data-theme="clasico"] .font-display,
+[data-theme="clasico"] h1,
+[data-theme="clasico"] h2 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  letter-spacing: 0 !important;
+}
+[data-theme="clasico"] .font-mono {
+  font-family: "EB Garamond", Georgia, serif;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+[data-theme="clasico"] .fo-backdrop {
+  background:
+    radial-gradient(70rem 40rem at 50% -10%, rgb(255 255 255 / 0.55), transparent 60%),
+    radial-gradient(60rem 40rem at 50% 120%, rgb(176 138 46 / 0.10), transparent 60%),
+    var(--bg);
+}
+[data-theme="clasico"] .fo-backdrop::after {
+  display: none;
+}
+[data-theme="clasico"] .text-gradient,
+[data-theme="clasico"] .text-gold {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: #8a6d22;
+}
+[data-theme="clasico"] .glow-lime {
+  box-shadow: 0 2px 0 rgb(43 38 34 / 0.25);
+}
+[data-theme="clasico"] .card {
+  background: var(--surface);
+  border: 1px solid #d9c9a3;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 8px 24px rgb(43 38 34 / 0.06);
+  backdrop-filter: none;
+}
+[data-theme="clasico"] ::selection {
+  background: #e8d6a6;
+  color: #2b2622;
+}

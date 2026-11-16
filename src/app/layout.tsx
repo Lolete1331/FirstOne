@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Space_Grotesk, Unbounded } from "next/font/google";
 import "./globals.css";
+import "@fontsource/cormorant-garamond/latin-600.css";
+import "@fontsource/cormorant-garamond/latin-700.css";
+import "@fontsource/eb-garamond/latin-400.css";
+import "@fontsource/eb-garamond/latin-400-italic.css";
 import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/components/auth-provider";
 
