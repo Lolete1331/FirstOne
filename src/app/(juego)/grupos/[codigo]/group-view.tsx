@@ -9,7 +9,22 @@ import { getSupabase } from "@/lib/supabase/client";
 import { countryFlag } from "@/lib/countries";
 
 type Row = { username: string; country: string | null; medals: number; words: number; streak: number; games_week: number };
-type Info = { code: string; name: string; members: number; owner: string; is_member: boolean; is_owner: boolean; ranking: Row[] | null };
+type Request = { username: string; country: string | null };
+type Info = {
+  code: string;
+  name: string;
+  members: number;
+  owner: string;
+  is_member: boolean;
+  is_owner: boolean;
+  is_public: boolean;
+  points_week: number | null;
+  points_year: number | null;
+  rank_week: number | null;
+  rank_year: number | null;
+  requests: Request[] | null;
+  ranking: Row[] | null;
+};
 type Sort = "medals" | "streak" | "games_week";
 
 export function GroupView({ code }: { code: string }) {
@@ -58,7 +73,7 @@ export function GroupView({ code }: { code: string }) {
   return (
     <div className="max-w-3xl mx-auto">
       <PageTitle kicker={`Grupo · código ${g.code}`} title={g.name}>
-        {g.members} {g.members === 1 ? "persona" : "personas"} · creado por @{g.owner}
+        {g.members} {g.members === 1 ? "persona" : "personas"} · creado por @{g.owner} · {g.is_public ? "visible en el buscador" : "privado"}
       </PageTitle>
 
       {!g.is_member ? (
@@ -89,6 +104,64 @@ export function GroupView({ code }: { code: string }) {
               Código: <b className="font-mono tracking-widest">{g.code}</b>
             </span>
           </div>
+
+          {g.is_owner && !!g.requests?.length && (
+            <section className="card mt-6 p-4 border-gold/50">
+              <h2 className="font-display font-bold text-lg">
+                {g.requests.length === 1 ? "1 persona quiere entrar" : `${g.requests.length} personas quieren entrar`}
+              </h2>
+              <ul className="mt-2 divide-y divide-line/60">
+                {g.requests.map((r) => (
+                  <li key={r.username} className="flex flex-wrap items-center gap-2 py-2">
+                    <Link href={`/u/${r.username}`} className="flex-1 min-w-0 font-bold truncate hover:text-lime">
+                      {countryFlag(r.country)} @{r.username}
+                    </Link>
+                    <button
+                      disabled={busy}
+                      onClick={() => call("respond_join_request", { p_code: code, p_username: r.username, p_accept: true })}
+                      className="rounded-full bg-lime text-bg font-bold px-4 py-1.5 text-sm disabled:opacity-50"
+                    >
+                      Aceptar
+                    </button>
+                    <button
+                      disabled={busy}
+                      onClick={() => call("respond_join_request", { p_code: code, p_username: r.username, p_accept: false })}
+                      className="rounded-full border border-line px-4 py-1.5 text-sm text-muted hover:text-text disabled:opacity-50"
+                    >
+                      Rechazar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            {([
+              ["Esta semana", g.points_week, "pts", g.rank_week],
+              ["Este año", g.points_year, "🥇", g.rank_year],
+            ] as const).map(([label, pts, unit, rank]) => (
+              <div key={label} className="card p-4">
+                <p className="text-xs text-muted">{label}</p>
+                <p className="font-display font-black text-2xl tabular-nums">
+                  {pts ?? 0} <span className="text-base">{unit}</span>
+                </p>
+                <p className="text-xs text-muted">
+                  {rank ? (
+                    <>
+                      Puesto <b className="text-gold">{rank}</b> entre los grupos{!g.is_public && " (si fuera visible)"}
+                    </>
+                  ) : (
+                    "Con 2 personas o más entra en la clasificación"
+                  )}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            Cada juego terminado, palabra oculta acertada o medalla de sus miembros suma un punto a la semana.{" "}
+            <Link href="/grupos" className="underline">Ver la clasificación de grupos</Link>
+          </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-display font-bold text-xl">Clasificación</h2>
@@ -132,6 +205,15 @@ export function GroupView({ code }: { code: string }) {
             >
               Salir del grupo
             </button>
+            {g.is_owner && (
+              <button
+                disabled={busy}
+                onClick={() => call("set_group_public", { p_code: code, p_public: !g.is_public })}
+                className="rounded-full border border-line px-4 py-2 hover:border-lime/60"
+              >
+                {g.is_public ? "🔒 Hacerlo privado" : "🔎 Hacerlo visible en el buscador"}
+              </button>
+            )}
             {g.is_owner && (
               <button
                 disabled={busy}

@@ -88,6 +88,12 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   el perfil (`profile-extras.tsx`) con `user_game_stats`. Grupos: `/grupos` y `/grupos/[código]` (6 caracteres),
   tablas `groups`/`group_members`, funciones `create_group`, `join_group`, `leave_group`, `remove_group_member`,
   `delete_group`, `my_groups`, `group_info` (la clasificación solo la ven los miembros). Tests en `tests/db/social.test.ts`.
+  Buscar y clasificación de grupos (17-nov): `groups.is_public` («visible»; los anteriores al 17-nov quedaron privados, los
+  nuevos visibles por defecto). `search_groups` (sin tildes, no devuelve el código), `request_join_group` /
+  `cancel_join_request` / `respond_join_request` (tabla `group_join_requests`, acepta quien creó el grupo), `my_join_requests`,
+  `set_group_public`, `group_ranking('week'|'year')` (solo visibles con ≥2 personas; semana = juegos + palabras ocultas +
+  medallas de 7 días, año = medallas del año; puntos en `_group_points`), `admin_delete_group` (botón en el buscador para el admin).
+  El código sigue siendo invitación directa sin aprobación.
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 

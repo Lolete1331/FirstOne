@@ -82,4 +82,57 @@ describe.skipIf(!hasDb)("rachas, insignias y grupos", () => {
     expect((await pool.query("select count(*)::int as n from public.groups where code = $1", [g.code])).rows[0].n).toBe(0);
     await expect(asRole("authenticated", b.id, "select public.join_group('ZZZZZZ')")).rejects.toThrow(/No existe/);
   });
+  it("grupos: buscar por nombre, pedir entrar, aceptar o rechazar y clasificación de grupos", async () => {
+    const owner = await createUser();
+    const fan = await createUser();
+    const other = await createUser();
+    const tag = Math.random().toString(36).slice(2, 7);
+    const [{ g }] = await asRole<{ g: { code: string } }>("authenticated", owner.id, `select public.create_group('Clase Ñandú ${tag}') as g`);
+    const [{ p }] = await asRole<{ p: { code: string } }>("authenticated", owner.id, `select public.create_group('Privado ${tag}', false) as p`);
+
+    // Se encuentra sin tildes ni mayúsculas; el privado no sale y no se ve el código
+    const found = await asRole<{ id: string; name: string; status: string | null; code?: string }>(
+      "anon", null, "select * from public.search_groups($1)", [`clase ñANDU ${tag}`],
+    );
+    expect(found).toHaveLength(1);
+    expect(found[0]).not.toHaveProperty("code");
+    expect(await asRole("anon", null, "select * from public.search_groups($1)", [`privado ${tag}`])).toEqual([]);
+    expect(await asRole("anon", null, "select * from public.search_groups('%')")).toEqual([]);
+
+    // Pedir entrar → pendiente; el creador lo ve y acepta
+    const id = found[0].id;
+    expect((await asRole<{ s: string }>("authenticated", fan.id, "select public.request_join_group($1) as s", [id]))[0].s).toBe("pending");
+    expect((await asRole<{ status: string }>("authenticated", fan.id, "select * from public.search_groups($1)", [tag]))[0].status).toBe("pending");
+    await asRole("authenticated", other.id, "select public.request_join_group($1)", [id]);
+    const infoOwner = (await asRole<{ i: { requests: { username: string }[] } }>("authenticated", owner.id, "select public.group_info($1) as i", [g.code]))[0].i;
+    expect(infoOwner.requests.map((r) => r.username).sort()).toEqual([fan.username, other.username].sort());
+    // Solo el creador puede responder
+    await expect(asRole("authenticated", fan.id, "select public.respond_join_request($1, $2, true)", [g.code, other.username])).rejects.toThrow();
+    await asRole("authenticated", owner.id, "select public.respond_join_request($1, $2, true)", [g.code, fan.username]);
+    await asRole("authenticated", owner.id, "select public.respond_join_request($1, $2, false)", [g.code, other.username]);
+    const mine = await asRole<{ code: string }>("authenticated", fan.id, "select * from public.my_groups()");
+    expect(mine.map((x) => x.code)).toContain(g.code);
+    expect(await asRole("authenticated", other.id, "select * from public.my_groups()")).toEqual([]);
+    expect(await asRole("authenticated", other.id, "select * from public.my_join_requests()")).toEqual([]);
+    // No se puede pedir entrar en un grupo privado
+    const [{ pid }] = (await pool.query("select id as pid from public.groups where code = $1", [p.code])).rows;
+    await expect(asRole("authenticated", fan.id, "select public.request_join_group($1)", [pid])).rejects.toThrow();
+
+    // Clasificación: el grupo visible con 2 personas suma puntos; el privado no aparece
+    await claimNow(fan.id, "quetzal");
+    await asRole("authenticated", fan.id, "select public.record_game_result('refranes', $1::date, 4, 5)", [today()]);
+    const ranking = await asRole<{ id: string; points: string; code: string | null }>("authenticated", fan.id, "select * from public.group_ranking('week', 100)");
+    const row = ranking.find((r) => r.id === id);
+    expect(Number(row?.points)).toBe(2); // 1 juego + 1 medalla
+    expect(row?.code).toBe(g.code); // es miembro: puede ir a su grupo
+    expect(ranking.find((r) => r.id === pid)).toBeUndefined();
+    const anonRanking = await asRole<{ id: string; code: string | null }>("anon", null, "select * from public.group_ranking('year', 100)");
+    expect(anonRanking.find((r) => r.id === id)?.code).toBeNull();
+
+    // Al hacerlo privado deja de salir y se borran las solicitudes
+    await asRole("authenticated", other.id, "select public.request_join_group($1)", [id]);
+    await asRole("authenticated", owner.id, "select public.set_group_public($1, false)", [g.code]);
+    expect(await asRole("anon", null, "select * from public.search_groups($1)", [tag])).toEqual([]);
+    expect(await asRole("authenticated", other.id, "select * from public.my_join_requests()")).toEqual([]);
+  });
 });

@@ -78,9 +78,10 @@ export default function PrivacidadPage() {
               <td>
                 Calcular tu racha de días seguidos, tus insignias y el resumen de juegos de tu perfil, que son <b>públicos</b>.
                 En los grupos, sus miembros ven tu nombre de usuario, tu país, tus medallas del año, tu racha y cuántos juegos
-                has terminado esa semana.
+                has terminado esa semana. Si pides entrar en un grupo, quien lo creó ve tu nombre de usuario y tu país. De los
+                grupos visibles, cualquiera puede ver el nombre, cuántas personas son y sus puntos.
               </td>
-              <td>Mientras tengas cuenta (puedes salir de un grupo cuando quieras).</td>
+              <td>Mientras tengas cuenta (puedes salir de un grupo o cancelar una solicitud cuando quieras).</td>
             </tr>
             <tr>
               <td>
