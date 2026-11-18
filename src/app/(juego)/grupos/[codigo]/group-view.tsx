@@ -35,6 +35,9 @@ export function GroupView({ code }: { code: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [invitee, setInvitee] = useState("");
+  const [invMsg, setInvMsg] = useState<string | null>(null);
+  const pending = useRpc<{ username: string }[]>("group_pending_invites", info.data?.is_owner ? { p_code: code } : null);
   const g = info.data;
 
   const rows = useMemo(() => {
@@ -51,6 +54,22 @@ export function GroupView({ code }: { code: string }) {
     if (error) setError(error.message);
     else if (after) after();
     else info.reload();
+  }
+
+  async function invite(e: React.FormEvent) {
+    e.preventDefault();
+    const name = invitee.trim().replace(/^@/, "");
+    if (!name) return;
+    setBusy(true);
+    setError(null);
+    setInvMsg(null);
+    const { data, error } = await getSupabase().rpc("invite_to_group", { p_code: code, p_username: name });
+    setBusy(false);
+    if (error) return setError(error.message);
+    setInvMsg(data === "member" ? `@${name} ya está en el grupo.` : `Invitación enviada a @${name}. Le saldrá un aviso al entrar en la web.`);
+    setInvitee("");
+    pending.reload();
+    info.reload();
   }
 
   async function share() {
@@ -133,6 +152,44 @@ export function GroupView({ code }: { code: string }) {
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {g.is_owner && (
+            <section className="card mt-6 p-4">
+              <h2 className="font-display font-bold text-lg">Invitar por @usuario</h2>
+              <p className="text-xs text-muted">Le saldrá un aviso en la web y decidirá si quiere entrar.</p>
+              <form onSubmit={invite} className="mt-3 flex gap-2">
+                <input
+                  value={invitee}
+                  onChange={(e) => setInvitee(e.target.value)}
+                  maxLength={21}
+                  placeholder="@usuario"
+                  aria-label="Nombre de usuario a invitar"
+                  className="flex-1 min-w-0 rounded-xl bg-surface-2 border border-line px-3 py-2 outline-none focus:border-lime/70"
+                />
+                <button disabled={busy || !invitee.trim()} className="rounded-xl bg-lime text-bg font-bold px-4 disabled:opacity-40">
+                  Invitar
+                </button>
+              </form>
+              {invMsg && <p className="mt-2 text-sm text-lime">{invMsg}</p>}
+              {!!pending.data?.length && (
+                <p className="mt-3 text-sm text-muted">
+                  Esperando respuesta:{" "}
+                  {pending.data.map((p, i) => (
+                    <span key={p.username}>
+                      {i > 0 && ", "}@{p.username}{" "}
+                      <button
+                        onClick={() => call("cancel_group_invite", { p_code: code, p_username: p.username }, () => pending.reload())}
+                        className="text-xs underline"
+                        aria-label={`Cancelar la invitación a @${p.username}`}
+                      >
+                        (cancelar)
+                      </button>
+                    </span>
+                  ))}
+                </p>
+              )}
             </section>
           )}
 

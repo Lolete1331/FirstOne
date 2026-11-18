@@ -94,6 +94,9 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   `set_group_public`, `group_ranking('week'|'year')` (solo visibles con ≥2 personas; semana = juegos + palabras ocultas +
   medallas de 7 días, año = medallas del año; puntos en `_group_points`), `admin_delete_group` (botón en el buscador para el admin).
   El código sigue siendo invitación directa sin aprobación.
+  Invitaciones por @usuario (19-nov): tabla `group_invites`, `invite_to_group` (solo el creador), `cancel_group_invite`,
+  `my_group_invites`, `answer_group_invite`, `group_pending_invites`; aviso `GroupInviteBanner` en la portada y en el
+  diseño de `(juego)`. Grupo «Los fieles de FirstOne» de @Lolete (19-nov) para los jugadores que vuelven cada día.
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 

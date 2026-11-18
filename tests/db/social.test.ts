@@ -135,4 +135,28 @@ describe.skipIf(!hasDb)("rachas, insignias y grupos", () => {
     expect(await asRole("anon", null, "select * from public.search_groups($1)", [tag])).toEqual([]);
     expect(await asRole("authenticated", other.id, "select * from public.my_join_requests()")).toEqual([]);
   });
+  it("grupos: invitar por @usuario, aceptar o rechazar", async () => {
+    const owner = await createUser();
+    const fiel = await createUser();
+    const otro = await createUser();
+    const [{ g }] = await asRole<{ g: { code: string } }>("authenticated", owner.id, "select public.create_group('Los fieles') as g");
+    expect((await asRole<{ s: string }>("authenticated", owner.id, "select public.invite_to_group($1, $2) as s", [g.code, "@" + fiel.username.toUpperCase()]))[0].s).toBe("invited");
+    await asRole("authenticated", owner.id, "select public.invite_to_group($1, $2)", [g.code, otro.username]);
+    // Solo el creador invita, y el nombre tiene que existir
+    await expect(asRole("authenticated", fiel.id, "select public.invite_to_group($1, $2)", [g.code, otro.username])).rejects.toThrow();
+    await expect(asRole("authenticated", owner.id, "select public.invite_to_group($1, 'noexiste_zz')", [g.code])).rejects.toThrow(/No existe/);
+    // Invitado: ve la invitación con quién le invita; NO está dentro hasta aceptar
+    const inv = await asRole<{ code: string; invited_by: string }>("authenticated", fiel.id, "select * from public.my_group_invites()");
+    expect(inv).toEqual([expect.objectContaining({ code: g.code, invited_by: owner.username })]);
+    expect(await asRole("authenticated", fiel.id, "select * from public.my_groups()")).toEqual([]);
+    expect((await asRole("authenticated", owner.id, "select * from public.group_pending_invites($1)", [g.code])).length).toBe(2);
+    expect(await asRole("authenticated", fiel.id, "select * from public.group_pending_invites($1)", [g.code])).toEqual([]);
+    await asRole("authenticated", fiel.id, "select public.answer_group_invite($1, true)", [g.code]);
+    await asRole("authenticated", otro.id, "select public.answer_group_invite($1, false)", [g.code]);
+    expect((await asRole<{ code: string }>("authenticated", fiel.id, "select * from public.my_groups()")).map((x) => x.code)).toEqual([g.code]);
+    expect(await asRole("authenticated", otro.id, "select * from public.my_groups()")).toEqual([]);
+    expect(await asRole("authenticated", owner.id, "select * from public.group_pending_invites($1)", [g.code])).toEqual([]);
+    // Invitar a alguien que ya está dentro no hace nada
+    expect((await asRole<{ s: string }>("authenticated", owner.id, "select public.invite_to_group($1, $2) as s", [g.code, fiel.username]))[0].s).toBe("member");
+  });
 });
