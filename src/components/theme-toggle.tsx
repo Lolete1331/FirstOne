@@ -42,7 +42,7 @@ export function ThemeToggle({ variant = "chip" }: { variant?: "chip" | "link" })
       onClick={toggle}
       title={`Cambiar a ${label.toLowerCase()}`}
       aria-label={`Cambiar a ${label.toLowerCase()}`}
-      className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-3 py-1.5 text-xs font-bold hover:border-lime/60 transition-colors"
+      className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-2.5 sm:px-3 py-1.5 text-xs font-bold hover:border-lime/60 transition-colors"
     >
       <span aria-hidden>🎨</span>
       <span className="hidden sm:inline">{label}</span>

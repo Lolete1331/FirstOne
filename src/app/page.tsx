@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { LegalLinks } from "@/components/legal/legal-links";
 import { LEGAL } from "@/lib/legal";
 import { GroupInviteBanner } from "@/components/grupos/invite-banner";
+import { WordChallengersBanner } from "@/components/racha/challengers-banner";
 
 export const metadata: Metadata = {
   title: { absolute: "FirstOne — juega con las palabras del español" },
@@ -19,6 +20,7 @@ export default function Portada() {
     <>
       <div className="fo-backdrop" aria-hidden />
       <GroupInviteBanner />
+      <WordChallengersBanner />
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-10 sm:py-16 flex flex-col">
         <div className="flex justify-end -mt-4 mb-2">
           <ThemeToggle />

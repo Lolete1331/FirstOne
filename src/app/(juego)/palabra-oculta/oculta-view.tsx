@@ -1,4 +1,6 @@
 "use client";
+import { notifyActivity } from "@/lib/hooks/use-my-streak";
+import { StreakNote } from "@/components/racha/streak";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
@@ -97,6 +99,7 @@ export function OcultaView({ day: askedDay }: { day?: string }) {
     switch (r.status) {
       case "ok":
         update({ ...game, rows: [...game.rows, { guess: input, marks: r.marks }], solved: r.solved, finished: r.finished, reveal: r.reveal });
+        notifyActivity();
         setPosition(r.position);
         setInput("");
         setMessage(null);
@@ -395,7 +398,8 @@ function Result({ info, game, tries, position, guest }: { info: OcultaState; gam
           Ir a conquistar palabras
         </Link>
       </div>
-      {info.today ? <NextWord /> : (
+      {!guest && info.today && <StreakNote className="mt-4 text-sm text-[#6b6256]" />}
+      {info.today ? <NextWord className={guest ? undefined : "mt-1 text-sm text-[#6b6256]"} /> : (
         <p className="mt-4 text-sm text-[#6b6256]">
           <Link href="/palabra-oculta/anteriores" className="underline">Jugar otra palabra anterior</Link> ·{" "}
           <Link href="/palabra-oculta" className="underline">Ir a la de hoy</Link>

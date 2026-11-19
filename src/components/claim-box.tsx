@@ -1,4 +1,5 @@
 "use client";
+import { notifyActivity } from "@/lib/hooks/use-my-streak";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useAnimationControls } from "motion/react";
@@ -88,6 +89,7 @@ export function ClaimBox() {
         }
         setResult({ ...res, word: res.word ?? word });
         if (res.status === "won") celebrate();
+        if (res.status === "won" || res.status === "joined") notifyActivity();
         if (res.status === "invalid") {
           navigator.vibrate?.(80);
           shake.start({ x: [0, -14, 12, -8, 6, 0], transition: { duration: 0.4 } });

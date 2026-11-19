@@ -1,6 +1,7 @@
 "use client";
 import { getSupabase } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/env";
+import { notifyActivity } from "@/lib/hooks/use-my-streak";
 
 export type GameKey = "sopa" | "significa" | "existe" | "refranes" | "intrusa" | "b-o-v" | "ahorcado" | "anagramas";
 
@@ -15,6 +16,7 @@ export async function recordGameResult(game: GameKey, day: string, score: number
     const { data } = await supabase.auth.getSession();
     if (!data.session) return;
     await supabase.rpc("record_game_result", { p_game: game, p_day: day, p_score: score, p_total: total, p_seconds: seconds ?? null });
+    notifyActivity();
   } catch {
     /* sin conexión: no pasa nada */
   }

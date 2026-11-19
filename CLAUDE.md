@@ -97,6 +97,12 @@ devuelve 401, pide uno nuevo con `request_credential` explicando al usuario cóm
   Invitaciones por @usuario (19-nov): tabla `group_invites`, `invite_to_group` (solo el creador), `cancel_group_invite`,
   `my_group_invites`, `answer_group_invite`, `group_pending_invites`; aviso `GroupInviteBanner` en la portada y en el
   diseño de `(juego)`. Grupo «Los fieles de FirstOne» de @Lolete (19-nov) para los jugadores que vuelven cada día.
+- Retención (19-nov): racha visible en la cabecera (`StreakChip`, apagada si hoy aún no ha jugado) y al terminar cualquier
+  juego (`StreakNote` dentro de `NextDay` y en la palabra oculta); hook `useMyStreak` + evento `fo-activity`
+  (`notifyActivity()` tras guardar juego, reclamar palabra o intentar la oculta). Aviso «Desde tu última visita, N personas
+  han intentado quitarte tus palabras» (`WordChallengersBanner`, `my_word_challengers` / `mark_word_challengers_seen`, tabla
+  `word_alerts_seen`; última visita = al cerrar el aviso, máximo 30 días). Decisión del dueño: NO sugerir palabras libres
+  (le quita la gracia). En móvil con sesión, la cabecera muestra solo el icono del logo.
 - `/diploma/[palabra]/[año]` diploma imprimible (A4 apaisado, estilo clásico) para el dueño de una palabra;
   el botón solo lo ve el dueño (resultado de la medalla e historial). Nombre opcional, no se guarda.
 

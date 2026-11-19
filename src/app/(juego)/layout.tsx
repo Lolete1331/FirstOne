@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { LegalLinks } from "@/components/legal/legal-links";
 import { LEGAL } from "@/lib/legal";
 import { GroupInviteBanner } from "@/components/grupos/invite-banner";
+import { WordChallengersBanner } from "@/components/racha/challengers-banner";
 
 /** Diseño del juego: cabecera, fondo neón y menú inferior. */
 export default function JuegoLayout({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,7 @@ export default function JuegoLayout({ children }: { children: React.ReactNode })
         <Header />
       </Suspense>
       <GroupInviteBanner />
+      <WordChallengersBanner />
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 pb-8">{children}</main>
       <footer className="w-full max-w-5xl mx-auto px-4 pb-28 md:pb-8 text-xs text-muted">
         <LegalLinks email={LEGAL.contactEmail} />

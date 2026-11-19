@@ -6,15 +6,16 @@ import { NAV_ITEMS } from "./nav-items";
 import { useAuth } from "./auth-provider";
 import { CountdownChip } from "./countdown";
 import { ThemeToggle } from "./theme-toggle";
+import { StreakChip } from "./racha/streak";
 import { countryFlag } from "@/lib/countries";
 import { useHydrated } from "@/lib/hooks/use-hydrated";
 
-export function Logo() {
+export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className="group flex items-center gap-2 font-display font-black tracking-tight text-lg">
+    <Link href="/" className="group shrink-0 flex items-center gap-2 font-display font-black tracking-tight text-lg">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/icon.svg" alt="" width={34} height={34} className="size-[34px] group-hover:rotate-[-8deg] transition-transform" />
-      <span>
+      <span className={compact ? "hidden min-[440px]:inline" : undefined}>
         First<span className="text-gradient">One</span>
       </span>
     </Link>
@@ -44,7 +45,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-bg/60 border-b border-line">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center gap-4">
-        <Logo />
+        <Logo compact={!loading && Boolean(profile)} />
         <nav className="hidden md:flex items-center gap-1 ml-4">
           {NAV_ITEMS.map((item) => {
             const active = pathname.startsWith(item.href) || (item.href === "/juegos" && pathname.startsWith("/palabra-oculta"));
@@ -62,13 +63,14 @@ export function Header() {
             );
           })}
         </nav>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto min-w-0 flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           <CountdownChip />
           {loading ? (
             <span className="size-9 rounded-full bg-surface-2 animate-pulse" />
           ) : profile ? (
             <>
+            <StreakChip />
             {profile.is_admin && (
               <Link href="/admin" className="rounded-full border border-pink/50 text-pink text-xs font-bold px-3 py-1.5 hover:bg-pink/10">
                 Admin
@@ -76,12 +78,12 @@ export function Header() {
             )}
             <Link
               href={`/u/${profile.username}`}
-              className="flex items-center gap-2 rounded-full bg-surface-2 border border-line pl-1 pr-3 py-1 hover:border-lime/60 transition-colors"
+              className="min-w-0 flex items-center gap-2 rounded-full bg-surface-2 border border-line pl-1 pr-3 py-1 hover:border-lime/60 transition-colors"
             >
               <span className="grid place-items-center size-7 rounded-full bg-gradient-to-br from-violet to-pink text-xs font-bold uppercase">
                 {profile.username[0]}
               </span>
-              <span className="text-sm font-medium max-w-24 truncate">
+              <span className="text-sm font-medium max-w-[5.5rem] sm:max-w-24 truncate">
                 {countryFlag(profile.country)} @{profile.username}
               </span>
             </Link>

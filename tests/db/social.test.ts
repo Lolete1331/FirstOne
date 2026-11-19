@@ -159,4 +159,26 @@ describe.skipIf(!hasDb)("rachas, insignias y grupos", () => {
     // Invitar a alguien que ya está dentro no hace nada
     expect((await asRole<{ s: string }>("authenticated", owner.id, "select public.invite_to_group($1, $2) as s", [g.code, fiel.username]))[0].s).toBe("member");
   });
+  it("avisa al dueño de cuántos han intentado quitarle sus palabras desde su última visita", async () => {
+    const owner = await createUser();
+    const a = await createUser();
+    const b = await createUser();
+    await claimNow(owner.id, "zarigüeya");
+    await claimNow(owner.id, "almohada");
+    await claimNow(a.id, "zarigüeya");
+    await claimNow(b.id, "zarigüeya");
+    await claimNow(b.id, "almohada");
+    type Alert = { total: number; people: number; words: { word: string; n: number; last_user: string }[] };
+    const get = async (uid: string) => (await asRole<{ r: Alert }>("authenticated", uid, "select public.my_word_challengers() as r"))[0].r;
+    const r = await get(owner.id);
+    expect(r.total).toBe(3);
+    expect(r.people).toBe(2);
+    expect(r.words[0]).toMatchObject({ word: "zarigüeya", n: 2, last_user: b.username });
+    // Los que llegaron después no reciben avisos de palabras que no son suyas
+    expect((await get(a.id)).total).toBe(0);
+    // Tras cerrar el aviso, vuelve a cero
+    await asRole("authenticated", owner.id, "select public.mark_word_challengers_seen()");
+    expect((await get(owner.id)).total).toBe(0);
+    expect((await asRole<{ r: unknown }>("anon", null, "select 1 as r").catch(() => null))).toBeTruthy();
+  });
 });
