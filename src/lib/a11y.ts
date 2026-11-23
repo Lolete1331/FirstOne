@@ -31,7 +31,7 @@ export const STANDARD: A11ySettings = {
 };
 
 export const PROFILES: { id: ProfileId; emoji: string; name: string; hint: string; settings: A11ySettings }[] = [
-  { id: "estandar", emoji: "✨", name: "Estándar", hint: "La web tal cual", settings: STANDARD },
+  { id: "estandar", emoji: "✨", name: "Estándar", hint: "Estilo original", settings: STANDARD },
   {
     id: "dislexia",
     emoji: "📖",
