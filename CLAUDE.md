@@ -154,6 +154,12 @@ a las estadísticas (pendiente de decidir).
    letras en `globals.css` bajo `[data-theme="clasico"]`), con botón 🎨 en la cabecera, la portada y los pies para
    cambiar al moderno (`src/components/theme-toggle.tsx`, se guarda en localStorage `fo-theme`). La sección de lectura
    (`.lx-root`) conserva sus letras para dislexia.
+   **Pantalla a tu medida** (23-nov): el botón 🎨 (`theme-toggle.tsx`) abre un panel con estilo clásico/moderno, modos según la
+   necesidad (Estándar por defecto, Dislexia, Baja visión, Daltonismo, Concentración/TDAH, Mareo con el movimiento) y ajustes
+   personalizados (tamaño 100-140 %, letra Atkinson/Lexend/OpenDyslexic, espaciado, alto contraste, menos movimiento, fondo liso,
+   enlaces subrayados, símbolos ✓/↔ en la palabra oculta). Lógica en `src/lib/a11y.ts` (localStorage `fo-a11y`, atributos
+   `data-*` en `<html>` aplicados antes de pintar con `A11Y_INIT_SCRIPT`), estilos al final de `globals.css`,
+   `MotionPreference` desactiva las animaciones de motion. No se guarda nada en el servidor.
 6. ~~Imagen para compartir~~ hecha (15-nov): `/palabra/…` con tarjeta para redes.
 7. Palabra del día · ~~8. Página pública por palabra~~ hecha · ~~rachas~~ hechas (con insignias y grupos).
 

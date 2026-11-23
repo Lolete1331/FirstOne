@@ -455,3 +455,116 @@ body {
   background: #e8d6a6;
   color: #2b2622;
 }
+
+/* ───────────── «Pantalla a tu medida» (src/lib/a11y.ts) ─────────────
+   Atributos en <html>. La sección de lectura (.lx-root) tiene sus propios ajustes y no se toca. */
+:root[data-font="legible"] body,
+:root[data-font="legible"] :is(.font-display, .font-mono, h1, h2, h3, [class*="font-[family-name"], [style*="font-family"]):not(.lx-root *, [role="dialog"] *) {
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+:root[data-font="facil"] body,
+:root[data-font="facil"] :is(.font-display, .font-mono, h1, h2, h3, [class*="font-[family-name"], [style*="font-family"]):not(.lx-root *, [role="dialog"] *) {
+  font-family: "Lexend", system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+:root[data-font="dislexia"] body,
+:root[data-font="dislexia"] :is(.font-display, .font-mono, h1, h2, h3, [class*="font-[family-name"], [style*="font-family"]):not(.lx-root *, [role="dialog"] *) {
+  font-family: "OpenDyslexic", system-ui, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+:root[data-font] body :not(.lx-root, .lx-root *) {
+  font-style: normal;
+}
+
+:root[data-spacing] body :is(p, li, label, td, th, dd, blockquote, a, button):not(.lx-root *) {
+  letter-spacing: 0.04em;
+  word-spacing: 0.14em;
+  line-height: 1.75;
+}
+
+:root[data-links] main a:not(.lx-root *),
+:root[data-links] footer a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:root[data-plain] .fo-backdrop {
+  background: var(--bg) !important;
+}
+:root[data-plain] .fo-backdrop::after,
+:root[data-plain] .fo-backdrop::before {
+  display: none !important;
+}
+:root[data-plain] .fo-shine,
+:root[data-plain] .glow-lime {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+:root[data-motion] *,
+:root[data-motion] *::before,
+:root[data-motion] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Alto contraste: mismos nombres de colores, más oscuros/claros. */
+:root[data-contrast] {
+  --bg: #000;
+  --surface: #000;
+  --surface-2: #161616;
+  --line: rgb(255 255 255 / 0.55);
+  --text: #fff;
+  --muted: #e6e6e6;
+}
+:root[data-theme="clasico"][data-contrast] {
+  --bg: #fffdf8;
+  --surface: #ffffff;
+  --surface-2: #f1ead9;
+  --line: rgb(0 0 0 / 0.55);
+  --text: #000;
+  --muted: #2b2622;
+  --gold: #6e5414;
+  --pink: #6e1d27;
+  --cyan: #1f3a52;
+}
+:root[data-contrast] .fo-backdrop {
+  background: var(--bg) !important;
+}
+:root[data-contrast] .fo-backdrop::after {
+  display: none !important;
+}
+:root[data-contrast] .card {
+  background: var(--surface) !important;
+  border: 2px solid var(--line) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+:root[data-theme="clasico"][data-contrast] .text-gradient,
+:root[data-theme="clasico"][data-contrast] .text-gold {
+  color: #5a440f;
+}
+:root[data-contrast] :focus-visible {
+  outline: 3px solid var(--text) !important;
+  outline-offset: 2px;
+}
+
+/* Daltonismo: la palabra oculta añade un símbolo a cada color. */
+:root[data-symbols] .mark-ok,
+:root[data-symbols] .mark-near {
+  position: relative;
+}
+:root[data-symbols] .mark-ok::after,
+:root[data-symbols] .mark-near::after {
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  font-size: 0.6em;
+  line-height: 1;
+  font-weight: 700;
+}
+:root[data-symbols] .mark-ok::after { content: "✓"; }
+:root[data-symbols] .mark-near::after { content: "↔"; }

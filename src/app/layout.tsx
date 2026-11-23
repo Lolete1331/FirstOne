@@ -5,6 +5,15 @@ import "@fontsource/cormorant-garamond/latin-600.css";
 import "@fontsource/cormorant-garamond/latin-700.css";
 import "@fontsource/eb-garamond/latin-400.css";
 import "@fontsource/eb-garamond/latin-400-italic.css";
+// Letras de «Pantalla a tu medida» (solo se descargan si alguien las elige)
+import "@fontsource/atkinson-hyperlegible/latin-400.css";
+import "@fontsource/atkinson-hyperlegible/latin-700.css";
+import "@fontsource/lexend/latin-400.css";
+import "@fontsource/lexend/latin-700.css";
+import "@fontsource/opendyslexic/latin-400.css";
+import "@fontsource/opendyslexic/latin-700.css";
+import { A11Y_INIT_SCRIPT } from "@/lib/a11y";
+import { MotionPreference } from "@/components/motion-preference";
 import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/components/auth-provider";
 
@@ -61,12 +70,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Estilo elegido por el jugador (clásico por defecto), antes de pintar nada para que no parpadee. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("fo-theme");if(t==="moderno"||t==="clasico"){document.documentElement.dataset.theme=t;}}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("fo-theme");if(t==="moderno"||t==="clasico"){document.documentElement.dataset.theme=t;}}catch(e){}` + A11Y_INIT_SCRIPT,
           }}
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <MotionPreference>{children}</MotionPreference>
+        </AuthProvider>
         {/* Contador de visitas anónimo y sin cookies (Vercel Web Analytics). */}
         <Analytics />
       </body>

@@ -11,8 +11,8 @@ import { emptyLocal, readLocal, writeLocal, type Local } from "@/lib/oculta/loca
 
 /* Paleta «de diccionario»: papel, tinta, dorado y azul tinta. */
 const MARK_STYLE: Record<Mark, string> = {
-  ok: "bg-[#b08a2e] border-[#b08a2e] text-white",
-  near: "bg-[#3e5c76] border-[#3e5c76] text-white",
+  ok: "mark-ok bg-[#b08a2e] border-[#b08a2e] text-white",
+  near: "mark-near bg-[#3e5c76] border-[#3e5c76] text-white",
   no: "bg-[#d6ccb6] border-[#d6ccb6] text-[#6b6256]",
 };
 const KEY_ROWS = ["qwertyuiop", "asdfghjklñ", "zxcvbnm"];
@@ -296,8 +296,8 @@ export function OcultaView({ day: askedDay }: { day?: string }) {
             <li>Cada día hay una palabra escondida, la misma para todo el mundo. Cambia cada día a las 00:00 UTC (en España, a la 1:00 en invierno y a las 2:00 en verano).</li>
             <li>
               Escribe palabras del diccionario con el mismo número de letras. Después de cada intento:
-              <span className="mx-1 inline-block rounded px-1.5 bg-[#b08a2e] text-white">dorado</span> letra en su sitio,
-              <span className="mx-1 inline-block rounded px-1.5 bg-[#3e5c76] text-white">azul</span> está en la palabra pero en otro sitio,
+              <span className="mark-ok mx-1 inline-block rounded px-1.5 pr-3 bg-[#b08a2e] text-white">dorado</span> letra en su sitio,
+              <span className="mark-near mx-1 inline-block rounded px-1.5 pr-3 bg-[#3e5c76] text-white">azul</span> está en la palabra pero en otro sitio,
               <span className="mx-1 inline-block rounded px-1.5 bg-[#d6ccb6] text-[#6b6256]">gris</span> no está.
             </li>
             <li>Las tildes no cuentan; la ñ sí es una letra distinta.</li>

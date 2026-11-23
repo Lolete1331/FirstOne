@@ -57,6 +57,10 @@ export default function CookiesPage() {
         <Link href="/juegos">juegos de palabras</Link> (sopa de letras, anagramas, refranes…), tu partida del día también se guarda solo
         en tu navegador, para que no la pierdas al recargar la página.
       </p>
+      <p>
+        El botón 🎨 <b>«Pantalla a tu medida»</b> guarda también en tu navegador el estilo elegido (clásico o moderno) y tus ajustes de
+        lectura (tamaño y tipo de letra, contraste, movimiento…). Tampoco salen de tu dispositivo: no sabemos qué ajustes usa nadie.
+      </p>
 
       <h2>Estadísticas de visitas</h2>
       <p>

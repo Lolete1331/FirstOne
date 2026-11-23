@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 export function celebrate() {
   if (typeof window === "undefined") return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (document.documentElement.hasAttribute("data-motion")) return; // «Menos movimiento» en Pantalla a tu medida
   const colors = ["#FFC83D", "#C6FF3D", "#FF2E88", "#22E4FF", "#FFFFFF"];
   const base = { colors, disableForReducedMotion: true, zIndex: 60 };
   confetti({ ...base, particleCount: 120, spread: 80, startVelocity: 55, origin: { y: 0.55 } });
